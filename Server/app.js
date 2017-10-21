@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 var express = require("express");
 var app = express();
 
@@ -9,10 +11,15 @@ app.use(express.static("static"));
 var User = require('./utils/user.js');
 var users = [];
 
+var Game = require('./utils/game.js');
+var games = [];
+
 io.on('connection',function(socket)
 {
     var user = new User(socket);
     users.push(user);
+
+    socket.emit("id",user.GetId());
 
     socket.on("disconnect",function()
     {
@@ -25,11 +32,18 @@ io.on('connection',function(socket)
             }
         }
     });
+
+    socket.on("createGame",function()
+    {
+        var game = new Game(io);
+        games.push(game);
+
+        socket.emit("join",game.id);
+    });
 });
 
 app.all("/game/:game",function(req,res)
 {
-    
 });
 
 http.listen(8000,function()

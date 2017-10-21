@@ -162,7 +162,15 @@ Game.prototype.LoadDeck = function(socket,deckid)
 
 Game.prototype.StartGame = function()
 {
-    decks.forEach(function(deck) 
+    //reset previous round
+    for(var i = 0; i < this.playerInfo.length; i++)
+    {
+        this.playerInfo[i].points = 0;
+    }
+    this.server.broadcast("playnames",this.playerInfo);
+
+    //Load cards from decks
+    this.decks.forEach(function(deck) 
     {
         this.cards.calls = deck.calls;
         this.cards.responses = deck.responses;
@@ -183,6 +191,11 @@ Game.prototype.StartGame = function()
 
 
     this.NextCallCard();
+}
+
+Game.prototype.EndGame = function()
+{
+    this.server.emit("end");
 }
 
 Game.prototype.NextCallCard = function()
