@@ -11,7 +11,7 @@ function User(socket)
     this.gameSocket;
 }
 
-exports = User;
+module.exports = User;
 
 User.prototype.GetId = function()
 {

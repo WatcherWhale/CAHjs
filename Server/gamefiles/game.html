@@ -1,9 +1,9 @@
 <html>
 <head>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/jquery.js"></script>
+    <!--script src="/js/jquery.js"></script-->
     <script>
-        var socket = io(url);
+        var socket = io(window.location.href);
     </script>
 </head>
 <body>

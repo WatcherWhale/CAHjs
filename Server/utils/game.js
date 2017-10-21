@@ -1,6 +1,6 @@
 var shortid = require('shortid');
 var shuffle = require('shuffle-array');
-var CardCast = require('./modules/cardcast.js');
+var CardCast = require('../modules/cardcast.js');
 
 function Game(io)
 {
@@ -31,13 +31,16 @@ function Game(io)
 Game.prototype.SetupGameServer = function(io)
 {
     //Start game server
-    this.server = io.of('/game/' + id);
+    this.server = io.of('/game/' + this.id);
+    var self = this;
+
     this.server.on('connection',function(socket)
-    {
+    {        
         //Add player to list
-        this.players.push(socket);
-        this.admin = this.players[0];
-        this.playerInfo.push(null);
+        console.log(self);
+        self.players.push(socket);
+        self.admin = self.players[0];
+        self.playerInfo.push(null);
 
         //
         // User Info
@@ -45,30 +48,30 @@ Game.prototype.SetupGameServer = function(io)
 
         socket.on('disconnect',function()
         {
-            if(this.players.lenght > 0)
+            if(self.players.lenght > 0)
             {
-                var i = this.players.indexOf(socket);
-                this.players.splice(i,1);
-                this.playerInfo.splice(i,1);
+                var i = self.players.indexOf(socket);
+                self.players.splice(i,1);
+                self.playerInfo.splice(i,1);
 
-                this.admin = this.players[0];
+                self.admin = self.players[0];
                 
-                this.admin.emit("admin");
-                this.server.emit("playnames",this.playerInfo);
+                self.admin.emit("admin");
+                self.server.emit("playnames",self.playerInfo);
             }
             else
-                this.server.close();
+                self.server.close();
         });
 
         //Username tells the server its name and id
         socket.on("name",function(name)
         {
-            var i = this.players.indexOf(socket);
+            var i = self.players.indexOf(socket);
 
             var info = {"name":name.name,"id":name.id,"points":0};
 
-            this.playerInfo[i] = info;
-            this.server.emit("playnames",this.playerInfo);
+            self.playerInfo[i] = info;
+            self.server.emit("playnames",self.playerInfo);
         });
 
         //
@@ -79,14 +82,14 @@ Game.prototype.SetupGameServer = function(io)
         socket.on("deck",function(deckid)
         {
             if(isAdmin(socket))
-                this.LoadDeck(socket,deckid);
+                self.LoadDeck(socket,deckid);
         });
 
         //Change Password
         socket.on("password",function(pass)
         {
             if(isAdmin(socket))
-                this.options.password = pass;
+                self.options.password = pass;
         });
 
         //
@@ -96,19 +99,19 @@ Game.prototype.SetupGameServer = function(io)
         //When a player plays a card
         socket.on("done",function(card)
         {
-            this.playersDone++;
-            var i = this.players.indexOf(socket);
+            self.playersDone++;
+            var i = self.players.indexOf(socket);
 
-            var cardinfo = {"card":card,"player":this.playerInfo[i]}
-            this.cardslaid.push(cardinfo);
+            var cardinfo = {"card":card,"player":self.playerInfo[i]}
+            self.cardslaid.push(cardinfo);
 
-            if(this.playersDone == this.players.lenght - 2)
+            if(self.playersDone == self.players.lenght - 2)
             {
-                this.server.broadcast("showcards",this.cardslaid);
+                self.server.broadcast("showcards",self.cardslaid);
             }
             else
             {
-                this.server.broadcast("carddone",this.playerInfo[i]);
+                self.server.broadcast("carddone",self.playerInfo[i]);
             }
         });
 
@@ -117,7 +120,7 @@ Game.prototype.SetupGameServer = function(io)
         {
             if(isCzar(socket))
             {
-                this.CzarChoose(card);
+                self.CzarChoose(card);
             }
         });
 
@@ -128,7 +131,7 @@ Game.prototype.SetupGameServer = function(io)
         //Check if admin
         function isAdmin(s)
         {
-            if(this.admin == s)
+            if(self.admin == s)
                 return true;
             else
                 return false;
@@ -137,7 +140,7 @@ Game.prototype.SetupGameServer = function(io)
         //Check if czar
         function isCzar(s)
         {
-            if(this.czar == s)
+            if(self.czar == s)
                 return true;
             else
                 return false;
@@ -155,13 +158,14 @@ Game.prototype.LoadDeck = function(socket,deckid)
             return;
         }
         
-        decks.push(deck);
+        this.decks.push(deck);
 
     });
 };
 
 Game.prototype.StartGame = function()
 {
+    
     //reset previous round
     for(var i = 0; i < this.playerInfo.length; i++)
     {

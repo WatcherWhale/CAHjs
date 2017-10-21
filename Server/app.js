@@ -1,12 +1,14 @@
 var fs = require('fs');
 
+var settings = require('./settings.json');
+
 var express = require("express");
 var app = express();
 
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 
-app.use(express.static("static"));
+app.use(express.static('static'));
 
 var User = require('./utils/user.js');
 var users = [];
@@ -44,9 +46,10 @@ io.on('connection',function(socket)
 
 app.all("/game/:game",function(req,res)
 {
+    res.sendFile(__dirname + "/gamefiles/game.html");
 });
 
-http.listen(8000,function()
+http.listen(settings.port,function()
 {
-    console.log("Server started on 8000");
+    console.log("Server started on port " + settings.port);
 });
