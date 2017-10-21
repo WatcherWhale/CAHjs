@@ -29,7 +29,7 @@ io.on('connection',function(socket)
 
 app.all("/game/:game",function(req,res)
 {
-
+    
 });
 
 http.listen(8000,function()
