@@ -37,7 +37,11 @@ Game.prototype.SetupGameServer = function(io)
     this.server.on('connection',function(socket)
     {        
         //Add player to list
-        console.log(self);
+        if(self.players.length == 0)
+        {
+            socket.emit("admin");
+        }
+        
         self.players.push(socket);
         self.admin = self.players[0];
         self.playerInfo.push(null);
