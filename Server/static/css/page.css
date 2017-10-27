@@ -1,0 +1,47 @@
+div.header
+{
+    height: 75px;
+    
+    background: tomato;
+    color:white;
+
+    font-size: 50px;
+}
+
+div.header div.title
+{
+    margin-left: 25px;
+}
+
+div.playscreen, div.startscreen
+{
+    position: absolute;
+    top: 75px;
+    bottom: 250px;
+    left:0;
+    right: 0;
+}
+
+div.footer
+{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 250px;
+    background: tomato;
+}
+
+div.adddecks i.button
+{
+    position: relative;
+    top: 25px;
+
+    font-size: 40px;
+}
+
+div.adddecks i.button:hover
+{
+    color: rgb(0, 140, 255);
+}

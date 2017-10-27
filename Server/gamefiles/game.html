@@ -3,29 +3,63 @@
     <title>Card Against Humanity</title>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/jquery.js"></script>
-    <script type="text/javascript" src="js/materialize.min.js"></script>
     
-    <script>
-        var socket = io(window.location.href);
-    </script>
+    <script src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../js/materialize.js"></script>
+    
+    <script src="../js/game.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="css/materialize.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/materialize.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/page.css"/>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-    <div class='header'></div>
-
-    <div class="playscreen">
-        <div class='callcard'></div>
-        <div class='laidcards'></div>
+    <div class="row">
+        <div class='s12 header row'>
+            <div class="title s3">Cards Against Humanity</div>
+        </div>
     </div>
 
-    <div class="startscreen">
-        <div class='addcecks'></div>
-        <div class='options'></div>
+    <div class="playscreen" style="display:none;">
+        <div class='callcard'>
+            <div class="card blackcard"></div>
+            <div class="background"></div>
+        </div>
+        <div class='laidcards'>
+            <div class="card whitecard"></div>
+            <div class="card whitecard"></div>
+        </div>
     </div>
 
-    <div class='points'></div>
-    <div class='owncards'></div>
+    <div class="startscreen row">
+        <div class='adddecks col s3'>
+            <ul class="collection with-header">
+
+                <li class="collection-header"><b>Decks</b></li>
+
+                <div class="decks">
+                    <li class="collection-item"><div>ABCDEF<a href="#!" class="secondary-content"><i class="material-icons">clear</i></a></div></li>
+                    <li class="collection-item"><div>ABCDEF<a href="#!" class="secondary-content"><i class="material-icons">clear</i></a></div></li>
+                </div>
+                <li class="collection-item row" style="border-top: 1px solid #e0e0e0;">
+                    <div class="input-field col s10">
+                        <input placeholder="Cardcast deck id" id="last_name" type="text">
+                    </div>
+                    <div class="col s2"><a href="#!" class="secondary-content"><i class="material-icons button">add_circle</i></a></div>
+                </li>
+            </ul>
+
+            
+        </div>
+        <div class='options col s9'>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class='points'></div>
+        <div class='owncards'></div>
+    </div>
 </body>
 </html>
