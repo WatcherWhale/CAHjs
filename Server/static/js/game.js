@@ -28,8 +28,6 @@ function SetPassword()
     var pass = $("input#password").val();
     options.password = pass;
 
-    console.log(pass);
-
     gameSocket.emit("options",options);
 }
 
@@ -53,7 +51,6 @@ gameSocket.on("adddeck",function(deck)
 gameSocket.on("playnames",function(playnames)
 {
     $("div.points div#playercollection").empty();
-    console.log(playnames);
 
     playnames.forEach(function(playname) 
     {
@@ -88,6 +85,28 @@ gameSocket.on("options",function(opt)
 gameSocket.on("cards",function(cards)
 {
     console.log(cards);
+});
+
+gameSocket.on("start",function()
+{
+    $("div.startscreen").toggleClass("hiddendiv", true);
+    $("div.playscreen").toggleClass("hiddendiv", false);
+});
+
+gameSocket.on("callcard",function(card)
+{
+    var text = "";
+
+    console.log(card[0]);
+
+    card[0].text.forEach(function(txt)
+    {
+        text += txt + "___";
+    },this);
+    text = text.substr(0,text.length - "___".length);
+
+    $("div.callcard div.card").html(text);
+    console.log(text)
 });
 
 //#endregion

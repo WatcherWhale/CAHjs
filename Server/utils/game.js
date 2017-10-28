@@ -220,6 +220,7 @@ Game.prototype.StartGame = function()
         this.playerInfo[i].points = 0;
     }
     this.server.emit("playnames",this.playerInfo);
+    this.server.emit("start");
 
     //Load cards from decks
     this.decks.forEach(function(deck) 
@@ -231,7 +232,6 @@ Game.prototype.StartGame = function()
 
         deck.responses.forEach(function(card)
         {
-            console.log(card);
             this.cards.responses.push(card);
         },this);
     },this);
@@ -250,7 +250,19 @@ Game.prototype.StartGame = function()
     },this);
 
 
-    //this.NextCallCard();
+    this.NextCzar();
+    
+    var card = this.cards.calls.splice(0,1);
+    this.cards.calls.push(card);
+
+    this.callloops--;
+
+    if(this.callloops == 0)
+    {
+        this.cards.calls = shuffle(this.cards.calls);
+    }
+
+    this.server.emit("callcard",card);
 }
 
 Game.prototype.EndGame = function()
@@ -261,7 +273,7 @@ Game.prototype.EndGame = function()
 Game.prototype.NextCallCard = function()
 {
     var card = this.cards.calls.splice(0,1);
-    this.cards.push(card);
+    this.cards.calls.push(card);
 
     this.callloops--;
 
@@ -275,9 +287,9 @@ Game.prototype.NextCallCard = function()
     
     this.players.forEach(function(player)
     {
-        var cards = this.cards.calls.splice(0,drawcards);
+        var cards = this.cards.calls.splice(0,this.drawcards);
         player.emit("cards",cards);
-    });
+    },this);
 
     this.drawcards = card.numResponses();
 }

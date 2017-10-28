@@ -20,6 +20,8 @@ div.playscreen, div.startscreen
     bottom: 250px;
     left:0;
     right: 0;
+
+    overflow-y: auto;
 }
 
 div.footer

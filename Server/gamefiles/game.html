@@ -11,6 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="../css/materialize.css"/>
     <link type="text/css" rel="stylesheet" href="../css/page.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/cards.css"/>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
@@ -21,13 +22,22 @@
         </div>
     </div>
 
-    <div class="playscreen" style="display:none;">
-        <div class='callcard'>
-            <div class="card blackcard"></div>
+    <div class="playscreen hiddendiv" >
+        <div class="row">
+            <div class='callcard col s2'>
+                <div class="card blackcard">
+                </div>
+                <a class="waves-effect waves-light btn-large blue confirmbtn disabled">Confirm</a>
+            </div>
+            <div class='laidcards row col s10'>
+                <div class="cardbox">
+                    <div class="card whitecard">Witte Kaart</div>
+                    <div class="card whitecard">Witte kaart2</div>
+                </div>
+            </div>
         </div>
-        <div class='laidcards row'>
-            <div class="card whitecard col"></div>
-            <div class="card whitecard col"></div>
+        <div class="row owncards box">
+            <div class="card whitecard">___</div>
         </div>
     </div>
 

@@ -1,0 +1,82 @@
+div.card
+{
+    width: 232px;
+    height: 250px;
+
+    padding: 20;
+    font-size: 20px;
+
+    margin-left: 15px; 
+
+    border-radius: 5px;
+    border: gray solid 1px;
+}
+
+div.blackcard
+{
+    background: black;
+    color:white;
+}
+
+div.whitecard
+{
+    background: white;
+    color:black;
+
+    float: left;
+}
+
+div.selectedcard
+{
+    background: #2196F3;
+
+    float: left;
+}
+
+div.cardbox div.card:last-child
+{
+    margin-left: 5px;
+}
+
+div.owncards
+{
+    height:250px;
+    border:none;
+    border-top: 2px solid #e0e0e0;
+
+    position: relative;
+    top:-5px;
+
+    overflow-x: auto;
+}
+
+div.owncards div.card
+{
+    width:155px;
+    height: 167;
+
+    padding: 13;
+    font-size: 13;
+
+    cursor: pointer;
+
+    -webkit-transition: all 0.4s; /* Safari */
+    transition: all 0.4s;
+}
+
+div.owncards div.card:hover
+{
+    width:207px;
+    height: 223;
+
+    font-size: 17;
+    padding: 17;
+
+    background: #2196F3;
+}
+
+.confirmbtn
+{
+    margin-left: 15px;
+    width:232;
+}
