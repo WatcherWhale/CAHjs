@@ -24,11 +24,10 @@
     <div class="playscreen" style="display:none;">
         <div class='callcard'>
             <div class="card blackcard"></div>
-            <div class="background"></div>
         </div>
-        <div class='laidcards'>
-            <div class="card whitecard"></div>
-            <div class="card whitecard"></div>
+        <div class='laidcards row'>
+            <div class="card whitecard col"></div>
+            <div class="card whitecard col"></div>
         </div>
     </div>
 
@@ -40,7 +39,7 @@
 
                 <div class="decks">
                 </div>
-                
+
                 <li class="collection-item row" style="border-top: 1px solid #e0e0e0;">
                     <div class="input-field col s10">
                         <input placeholder="Cardcast deck id" id="deck" type="text">
@@ -51,8 +50,29 @@
 
             
         </div>
-        <div class='options col s9'>
+        <div class='options col s8 box'>
+            <h4>Options</h4>
+            <div class="row">
+                <div class="range-field col s3">
+                    <label for="maxpoints">Points to win: <span id="maxpoints">8</span></label>
+                    <input type="range" id="maxpoints" min="1" max="20" value="8" onchange="InputChanged('maxpoints',this.value)"/>
+                </div>
+                <div class="range-field col s3">
+                    <label for="maxplayers">Max Players: <span id="maxplayers">8</span></label>
+                    <input type="range" id="maxplayers" min="3" max="15" value="8" onchange="InputChanged('maxplayers',this.value)"/>
+                </div>
+                <div class="range-field col s3">
+                    <label for="blankcards">Blank Cards: <span id="blankcards">0</span></label>
+                    <input type="range" id="blankcards" min="0" max="50" value="0" onchange="InputChanged('blankcards',this.value)"/>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="password" type="password" class="validate">
+                    <label for="password">Password</label>
+                </div>
+            </div>
         </div>
     </div>
 

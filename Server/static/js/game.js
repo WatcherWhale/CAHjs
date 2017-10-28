@@ -13,6 +13,12 @@ function AddDeck()
     gameSocket.emit("deck",deck);
 }
 
+function RemoveDeck(deckid)
+{
+    //remove list item
+    gameSocket.emit("removedeck",deckid);
+}
+
 //#endregion
 
 //#region SocketHandling
@@ -26,3 +32,13 @@ gameSocket.on("adddeck",function(deck)
 });
 
 //#endregion
+
+//#region UiHandling
+
+function InputChanged(input,value)
+{
+    $("label span#" + input).html(value);
+}
+
+//#endregion
+

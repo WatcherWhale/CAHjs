@@ -53,7 +53,7 @@ Game.prototype.SetupGameServer = function(io)
 
         self.decks.forEach(function(deck)
         {
-            socket.emit("adddeck",{"name":deck.name,"id":deck.id});
+            socket.emit("adddeck",{"name":deck.name,"id":deck.code});
         });
 
         //
@@ -167,7 +167,7 @@ Game.prototype.LoadDeck = function(socket,deckid)
     var exists = false;
     this.decks.forEach(function(deck)
     {
-        if(deck.id == deckid)
+        if(deck.code == deckid)
             exists = true;
     });
 

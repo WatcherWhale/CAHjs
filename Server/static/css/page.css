@@ -45,3 +45,11 @@ div.adddecks i.button:hover
 {
     color: rgb(0, 140, 255);
 }
+
+div.box
+{
+    border: 1px solid #e0e0e0;
+    height: 250px;
+    position: relative;
+    top: 8px;
+}
