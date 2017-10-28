@@ -17,7 +17,7 @@
 <body>
     <div class="row">
         <div class='s12 header row'>
-            <div class="title s3">Cards Against Humanity</div>
+            <div class="title s3">Cards Against Humanity JS</div>
         </div>
     </div>
 
@@ -35,7 +35,7 @@
         <div class='adddecks col s3'>
             <ul class="collection with-header">
 
-                <li class="collection-header"><b>Decks</b></li>
+                <li class="collection-header bold">Decks</li>
 
                 <div class="decks">
                 </div>
@@ -76,9 +76,31 @@
         </div>
     </div>
 
-    <div class="footer">
-        <div class='points'></div>
-        <div class='owncards'></div>
+    <div class="footer row">
+        <div class='points col s3'>
+            <ul class="collection with-header">
+               <li class="collection-header bold">Scoreboard</li>
+
+                <div id="playercollection">
+                    <li class="collection-item" id=""><div>Player 1<span class="secondary-content bold">0</span></div></li>
+                </div>
+
+            </ul>
+        </div>
+
+        <div class="chat col s9">
+            <div class="chatcontainer box row" style="margin-top:2px;">
+
+            </div>
+            <div class="chatinput row">
+                    <div class="input-field col s11 liftup">
+                            <input placeholder="Chat message..." id="chattext" type="text" class="validate">
+                    </div>
+                    <button class="col s1 btn waves-effect waves-light blue">Send
+                        <i class="material-icons right">send</i>
+                    </button>
+            </div>
+        </div> 
     </div>
 </body>
 </html>

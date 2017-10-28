@@ -31,6 +31,8 @@ div.footer
 
     height: 250px;
     background: tomato;
+
+    margin-bottom: 0px;
 }
 
 div.adddecks i.button
@@ -52,4 +54,37 @@ div.box
     height: 250px;
     position: relative;
     top: 8px;
+
+    border-radius: 2px;
+}
+
+div.points
+{
+    margin-top: 2px;
+    overflow-y: auto;
+    height: 248px;
+}
+
+div.chat div.chatcontainer
+{
+    background: white;
+    width: 100%;
+    height: 150px;
+}
+
+div.chat div.input-field.liftup
+{
+    margin: 0 0 0 0;
+    position: relative;
+    top:-5px;
+}
+
+div.chat div.chatinput
+{
+    margin-bottom: 0px;
+}
+
+.bold
+{
+    font-weight: bold;
 }

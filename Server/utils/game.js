@@ -62,17 +62,17 @@ Game.prototype.SetupGameServer = function(io)
 
         socket.on('disconnect',function()
         {
+            var i = self.players.indexOf(socket);
+            self.players.splice(i,1);
+            self.playerInfo.splice(i,1);
+
             if(self.players.lenght > 0)
             {
-                var i = self.players.indexOf(socket);
-                self.players.splice(i,1);
-                self.playerInfo.splice(i,1);
-
                 self.admin = self.players[0];
-                
                 self.admin.emit("admin");
-                self.server.emit("playnames",self.playerInfo);
             }
+
+            self.server.emit("playnames",self.playerInfo);
         });
 
         //Username tells the server its name and id
@@ -135,6 +135,19 @@ Game.prototype.SetupGameServer = function(io)
             {
                 self.CzarChoose(card);
             }
+        });
+
+        //
+        // ETC
+        //
+
+        socket.on("chat",function(msg)
+        {
+            self.players.forEach(function(player)
+            {
+                if(player != socket)
+                    player.emit("chat",msg);
+            });
         });
 
         //
