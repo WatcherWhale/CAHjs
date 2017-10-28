@@ -113,6 +113,12 @@ Game.prototype.SetupGameServer = function(io)
         //
         // Game socket handler
         //
+        
+        socket.on("startGame",function()
+        {
+            if(isAdmin(socket))
+                self.StartGame();
+        });
 
         //When a player plays a card
         socket.on("done",function(card)
@@ -205,7 +211,9 @@ Game.prototype.LoadDeck = function(socket,deckid)
 
 Game.prototype.StartGame = function()
 {
-    
+    if(this.decks.lenght == 0) return;
+    if(this.players.lenght < 3 && !testmode) return;
+
     //reset previous round
     for(var i = 0; i < this.playerInfo.length; i++)
     {
@@ -216,9 +224,17 @@ Game.prototype.StartGame = function()
     //Load cards from decks
     this.decks.forEach(function(deck) 
     {
-        this.cards.calls = deck.calls;
-        this.cards.responses = deck.responses;
-    });
+        deck.calls.forEach(function(card)
+        {
+            this.cards.calls.push(card);
+        },this);
+
+        deck.responses.forEach(function(card)
+        {
+            console.log(card);
+            this.cards.responses.push(card);
+        },this);
+    },this);
 
     //TODO:add blanks
 
@@ -229,12 +245,12 @@ Game.prototype.StartGame = function()
 
     this.players.forEach(function(player)
     {
-        var cards = this.cards.calls.splice(0,10);
+        var cards = this.cards.responses.splice(0,10);
         player.emit("cards",cards);
-    });
+    },this);
 
 
-    this.NextCallCard();
+    //this.NextCallCard();
 }
 
 Game.prototype.EndGame = function()
@@ -244,7 +260,7 @@ Game.prototype.EndGame = function()
 
 Game.prototype.NextCallCard = function()
 {
-    var card = this.cards.splice(0,1);
+    var card = this.cards.calls.splice(0,1);
     this.cards.push(card);
 
     this.callloops--;

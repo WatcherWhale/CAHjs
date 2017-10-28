@@ -1,5 +1,4 @@
 var gameSocket = io(window.location.href);
-var socket = io();
 
 var options;
 
@@ -34,6 +33,11 @@ function SetPassword()
     gameSocket.emit("options",options);
 }
 
+function StartGame()
+{
+    gameSocket.emit("startGame");
+}
+
 //#endregion
 
 //#region SocketHandling
@@ -62,6 +66,7 @@ gameSocket.on("playnames",function(playnames)
 gameSocket.on("admin",function()
 {
     $(".startscreen :input").attr("disabled", false);
+    $("a.start").toggleClass("disabled",false);
 });
 
 gameSocket.on("options",function(opt)
@@ -80,6 +85,11 @@ gameSocket.on("options",function(opt)
 
 });
 
+gameSocket.on("cards",function(cards)
+{
+    console.log(cards);
+});
+
 //#endregion
 
 //#region UiHandling
@@ -87,6 +97,7 @@ gameSocket.on("options",function(opt)
 $(document).ready(function()
 {
     $(".startscreen :input").attr("disabled", true);
+    $("a.start").toggleClass("disabled",true);
 })
 
 function InputChanged(input,value)
