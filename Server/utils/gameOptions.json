@@ -2,6 +2,5 @@
     "password":"",
     "maxPlayers":8,
     "maxPoints":8,
-    "blankcards":0,
-    "decks":[]
+    "blankcards":0
 }

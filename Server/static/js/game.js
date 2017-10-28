@@ -1,6 +1,8 @@
 var gameSocket = io(window.location.href);
 var socket = io();
 
+var options;
+
 gameSocket.emit("name",{"name":"testplayer","id":"ABC-DFG-HIJ-KLMNOP"});
 
 //#region Options
@@ -20,6 +22,16 @@ function RemoveDeck(deckid)
     //remove list item
     gameSocket.emit("removedeck",deckid);
     $("div.adddecks div.decks li#" + deckid).remove();
+}
+
+function SetPassword()
+{
+    var pass = $("input#password").val();
+    options.password = pass;
+
+    console.log(pass);
+
+    gameSocket.emit("options",options);
 }
 
 //#endregion
@@ -52,6 +64,22 @@ gameSocket.on("admin",function()
     $(".startscreen :input").attr("disabled", false);
 });
 
+gameSocket.on("options",function(opt)
+{
+    options = opt;
+    $("input#maxpoints").val(options.maxpoints);
+    $("input#maxplayers").val(options.maxplayers);
+    $("input#blankcards").val(options.blankcards);
+    $("input#password").val(options.password);
+
+    $("label span#maxpoints").html(options.maxpoints);
+    $("label span#maxplayers").html(options.maxplayers);
+    $("label span#blankcards").html(options.blankcards);
+
+    Materialize.updateTextFields();
+
+});
+
 //#endregion
 
 //#region UiHandling
@@ -64,6 +92,8 @@ $(document).ready(function()
 function InputChanged(input,value)
 {
     $("label span#" + input).html(value);
+    options[input] = parseInt(value);
+    gameSocket.emit("options",options);
 }
 
 //#endregion

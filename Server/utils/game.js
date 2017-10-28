@@ -46,6 +46,8 @@ Game.prototype.SetupGameServer = function(io)
         {
             socket.emit("admin");
         }
+
+        socket.emit("options",self.options);
         
         self.players.push(socket);
         self.admin = self.players[0];
@@ -99,10 +101,13 @@ Game.prototype.SetupGameServer = function(io)
         });
 
         //Change Password
-        socket.on("password",function(pass)
+        socket.on("options",function(options)
         {
             if(isAdmin(socket))
-                self.options.password = pass;
+            {
+                self.options = options;
+                self.server.emit("options",self.options);
+            }
         });
 
         //
