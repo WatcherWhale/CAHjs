@@ -12,6 +12,8 @@ function Game(io)
     if(!testmode)
         this.id = shortid.generate();
 
+        console.log(this.id);
+    
     this.admin = null;
     this.czar = null;
     this.players = [];
@@ -43,7 +45,7 @@ Game.prototype.SetupGameServer = function(io)
     var self = this;
 
     this.server.on('connection',function(socket)
-    {        
+    {
         //Add player to list
         if(self.players.length == 0)
         {
@@ -324,6 +326,15 @@ Game.prototype.NextCallCard = function()
     this.server.emit("callcard",card);
     this.callcard = card;
     
+    function isCzar(s)
+    {
+        if(this.czar == s)
+            return true;
+        else
+            return false;
+    }
+
+    var done = false;
     this.players.forEach(function(player)
     {
         if(!isCzar(player))
@@ -334,11 +345,22 @@ Game.prototype.NextCallCard = function()
             //replenish the responses
             this.cards.responses.push(cards);
         }
+
+        if(this.players.indexOf(player) == this.players.length - 1) done  = true;
+        
     },this);
 
-    this.drawcards = card[0].text.length -1;
+    var self = this;
+    var awaiter = setInterval(function()
+    {
+        if(done)
+        {
+            self.drawcards = card[0].text.length -1;
+            self.NextCzar();
+        }
 
-    this.NextCzar();
+        clearInterval(awaiter);
+    },50);
 }
 
 Game.prototype.NextCzar = function()

@@ -180,7 +180,7 @@ gameSocket.on("showcards",function(cardsholder)
 
 gameSocket.on("cardchosen",function(cardsholder)
 {
-    cardsholder.forEach(function(card)
+    cardsholder.card.forEach(function(card)
     {
         $("div.card#" + card.id).toggleClass("selectedcard",true);
     },this);
