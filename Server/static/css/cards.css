@@ -31,10 +31,16 @@ div.selectedcard
     background: #2196F3;
 }
 
-div.cardbox div.card:last-child
+div.cardbox div.card
 {
     margin-left: 5px;
 }
+
+div.cardbox div.card:first-child
+{
+    margin-left: 15px;
+}
+
 
 div.owncards
 {
@@ -100,4 +106,20 @@ div.blackcard div.pick div.amount
     height: 30px;
     width:30px;
     text-align: center;
+}
+
+div.czar
+{
+    position: absolute;
+    left:50%;
+    top:50%;
+
+    font-size: 50px;
+    z-index: 99;
+
+    transform: translate(-50%,-50%);
+
+    background-color: rgba(183, 183, 183, 0.5);
+    padding-left: 10px;
+    padding-right: 10px;
 }

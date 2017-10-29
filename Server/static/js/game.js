@@ -76,6 +76,14 @@ gameSocket.on("admin",function()
     $("a.start").toggleClass("disabled",false);
 });
 
+gameSocket.on("czar",function()
+{
+    isCzar = true;
+
+    var div = '<div class="czar box">You are the card czar!</div>';
+    $("div.owncards").append(div);
+});
+
 gameSocket.on("options",function(opt)
 {
     options = opt;
@@ -108,6 +116,7 @@ gameSocket.on("cards",function(cards)
     }, this);
 
     confirmed = false;
+    
 });
 
 gameSocket.on("start",function()
@@ -137,6 +146,34 @@ gameSocket.on("carddone",function(playerInfo)
     $("div.laidcards").append("<div class='card whitecard'></div>");
 });
 
+gameSocket.on("showcards",function(cardsholder)
+{
+    $("div.laidcards").empty();
+
+    cardsholder.forEach(function(holder)
+    {
+        if(holder.card.length > 1)
+        {
+            var div = "<div class='cardbox'>";
+
+            holder.card.forEach(function(card)
+            {
+                div += "<div class='card whitecard' id='" + card.id + "'>" + card.text + "</div>";
+            }, this);
+
+            div += "</div>";
+        }
+        else
+        {
+            var card = holder.card[0];
+            $("div.laidcards").append("<div class='card whitecard' id='" + card.id + "'>" + card.text + "</div>");
+        }
+    }, this);
+
+    $("div.laidcards").children().toggleClass("selectable",isCzar);
+    $("div.laidcards div.selectable").click(CzarSelect);
+});
+
 //#endregion
 
 //#region UiHandling
@@ -158,7 +195,7 @@ function InputChanged(input,value)
 
 function CardSelect()
 {
-    if(confirmed) return;
+    if(confirmed || isCzar) return;
     
     selectedCard = $(this).attr("id");
     $("a.confirmbtn").toggleClass("disabled",false);
@@ -168,15 +205,37 @@ function CardSelect()
     $(this).toggleClass("selectedCard",true);
 }
 
+function CzarSelect()
+{
+    if(confirmed) return;
+    
+    var cardid;
+
+    if($(this).hasClass("cardbox"))
+    {
+        cardid = $(this).first().attr("id");
+    }
+    else
+    {
+        cardid = $(this).attr("id");
+    }
+
+    var holder = GetLaidCardHolderById(cardid);
+    socket.emit("czarchoose",holder);
+}
+
+
 function Confirm()
 {
     if(isCzar)
     {
         isCzar = false;
         gameSocket.emit("czarChoose",GetLaidCardById(selectedCard));
+        confirmed = true;
     }
     else
     {
+        $("a.confirmbtn").toggleClass("disabled",true);
         var card = GetCardById(selectedCard);
 
         cardsLaid.push(card);
@@ -192,6 +251,8 @@ function Confirm()
         {
             gameSocket.emit("done",cardsLaid);
             cardsLaid = [];
+
+            confirmed = true;
         }
 
     }
@@ -215,15 +276,22 @@ function GetCardById(id)
     return c;
 }
 
-function GetLaidCardById(id)
+function GetLaidCardHolderById(id)
 {
-    var c;
-    cardsLaidArray.forEach(function(card)
+    var c = null;
+    cardsLaidArray.forEach(function(holder)
     {
-        if(card.card.id == id)
+        golder.card.forEach(function(card)
         {
-            c = card;
-            return;
-        }
+            if(card.id == id)
+            {
+                c = holder;
+                return;
+            }
+        },this);
+
+        if(c != null) return;
     },this);
+
+    return c;
 }

@@ -149,8 +149,9 @@ Game.prototype.SetupGameServer = function(io)
             self.cardslaid.push(cardinfo);
 
             //-1 because of the czar who does not need to choose
-            if(self.playersDone == self.players.lenght - 1)
+            if(self.playersDone == self.playerInfo.length - 1)
             {
+                self.cardslaid = shuffle(self.cardslaid);
                 self.server.emit("showcards",self.cardslaid);
             }
             else
@@ -280,9 +281,6 @@ Game.prototype.StartGame = function()
         //replenish the responses
         this.cards.responses.push(cards);
     },this);
-
-
-    this.NextCzar();
     
     var card = this.cards.calls.splice(0,1);
     this.cards.calls.push(card);
@@ -296,6 +294,7 @@ Game.prototype.StartGame = function()
     }
 
     this.server.emit("callcard",card);
+    this.NextCzar();
 }
 
 Game.prototype.EndGame = function()
