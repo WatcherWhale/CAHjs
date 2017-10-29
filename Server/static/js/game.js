@@ -166,6 +166,7 @@ gameSocket.on("showcards",function(cardsholder)
             }, this);
 
             div += "</div>";
+            $("div.laidcards").append(div);
         }
         else
         {
