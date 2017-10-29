@@ -123,3 +123,13 @@ div.czar
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.selectable
+{
+    cursor: pointer;
+}
+
+.selectable:hover
+{
+    background: #2196F3;
+}

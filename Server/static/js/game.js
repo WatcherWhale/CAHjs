@@ -127,6 +127,8 @@ gameSocket.on("start",function()
 
 gameSocket.on("callcard",function(card)
 {
+    $("div.laidcards").empty();
+    
     var text = "";
 
     card[0].text.forEach(function(txt)
@@ -152,6 +154,8 @@ gameSocket.on("showcards",function(cardsholder)
 
     cardsholder.forEach(function(holder)
     {
+        cardsLaidArray.push(holder);
+
         if(holder.card.length > 1)
         {
             var div = "<div class='cardbox'>";
@@ -208,34 +212,42 @@ function CardSelect()
 function CzarSelect()
 {
     if(confirmed) return;
-    
-    var cardid;
+
+    $("a.confirmbtn").toggleClass("disabled",false);
 
     if($(this).hasClass("cardbox"))
     {
-        cardid = $(this).first().attr("id");
+        selectedCard = $(this).first().attr("id");
+
+        $("div.laidcards").children().children().toggleClass("selectedCard",false);
+        $(this).children().toggleClass("selectedCard",true);
     }
     else
     {
-        cardid = $(this).attr("id");
-    }
+        selectedCard = $(this).attr("id");
 
-    var holder = GetLaidCardHolderById(cardid);
-    socket.emit("czarchoose",holder);
+        $("div.laidcards").children().toggleClass("selectedCard",false);
+        $(this).toggleClass("selectedCard",true);
+    }
 }
 
 
 function Confirm()
 {
+    $("a.confirmbtn").toggleClass("disabled",true);
+
     if(isCzar)
     {
         isCzar = false;
-        gameSocket.emit("czarChoose",GetLaidCardById(selectedCard));
-        confirmed = true;
+
+        var holder = GetLaidCardHolderById(selectedCard);
+        console.log(holder);
+        gameSocket.emit("czarchoose",holder);
+
+        $(".czar").remove();
     }
     else
     {
-        $("a.confirmbtn").toggleClass("disabled",true);
         var card = GetCardById(selectedCard);
 
         cardsLaid.push(card);
@@ -281,7 +293,8 @@ function GetLaidCardHolderById(id)
     var c = null;
     cardsLaidArray.forEach(function(holder)
     {
-        golder.card.forEach(function(card)
+        console.log(holder);
+        holder.card.forEach(function(card)
         {
             if(card.id == id)
             {

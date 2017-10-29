@@ -2,7 +2,7 @@ var shortid = require('shortid');
 var shuffle = require('shuffle-array');
 var CardCast = require('../modules/cardcast.js');
 
-var testmode = true;
+var testmode = false;
 
 function Game(io)
 {
@@ -286,6 +286,8 @@ Game.prototype.StartGame = function()
     this.cards.calls.push(card);
     this.callcard = card;
 
+    this.drawcards = card[0].text.length - 1;
+
     this.callloops--;
 
     if(this.callloops == 0)
@@ -305,6 +307,10 @@ Game.prototype.EndGame = function()
 
 Game.prototype.NextCallCard = function()
 {
+
+    this.cardslaid = [];
+    this.playersDone = 0;
+
     var card = this.cards.calls.splice(0,1);
     this.cards.calls.push(card);
 
@@ -315,20 +321,24 @@ Game.prototype.NextCallCard = function()
         this.cards.calls = shuffle(this.cards.calls);
     }
 
-    this.NextCzar();
     this.server.emit("callcard",card);
     this.callcard = card;
     
     this.players.forEach(function(player)
     {
-        var cards = this.cards.calls.splice(0,this.drawcards);
-        player.emit("cards",cards);
+        if(!isCzar(player))
+        {
+            var cards = this.cards.calls.splice(0,this.drawcards);
+            player.emit("cards",cards);
 
-        //replenish the responses
-        this.cards.responses.push(cards);
+            //replenish the responses
+            this.cards.responses.push(cards);
+        }
     },this);
 
-    this.drawcards = card.numResponses();
+    this.drawcards = card[0].text.length -1;
+
+    this.NextCzar();
 }
 
 Game.prototype.NextCzar = function()
@@ -370,6 +380,7 @@ Game.prototype.CzarChoose = function(card)
     this.server.emit("cardchosen",card);
     this.server.emit("playnames",this.playerInfo);
 
+    var self = this;
     setTimeout(function()
     {
         if(endgame)
@@ -378,9 +389,9 @@ Game.prototype.CzarChoose = function(card)
         }
         else
         {
-            this.NextCallCard();
+            self.NextCallCard();
         }
-    },2000);
+    },5000);
 }
 
 module.exports = Game;
