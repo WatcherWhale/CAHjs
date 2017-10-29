@@ -128,7 +128,7 @@ gameSocket.on("start",function()
 gameSocket.on("callcard",function(card)
 {
     $("div.laidcards").empty();
-    
+
     var text = "";
 
     card[0].text.forEach(function(txt)
@@ -176,6 +176,14 @@ gameSocket.on("showcards",function(cardsholder)
 
     $("div.laidcards").children().toggleClass("selectable",isCzar);
     $("div.laidcards div.selectable").click(CzarSelect);
+});
+
+gameSocket.on("cardchosen",function(cardsholder)
+{
+    cardsholder.forEach(function(card)
+    {
+        $("div.card#" + card.id).toggleClass("selectedcard",true);
+    },this);
 });
 
 //#endregion

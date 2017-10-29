@@ -84,7 +84,7 @@ Game.prototype.SetupGameServer = function(io)
             self.players.splice(i,1);
             self.playerInfo.splice(i,1);
 
-            if(self.players.lenght > 0)
+            if(self.players.length > 0)
             {
                 self.admin = self.players[0];
                 self.admin.emit("admin");
@@ -235,8 +235,8 @@ Game.prototype.LoadDeck = function(socket,deckid)
 
 Game.prototype.StartGame = function()
 {
-    if(this.decks.lenght == 0) return;
-    if(this.players.lenght < 3 && !testmode) return;
+    if(this.decks.length == 0) return;
+    if(this.players.length < 3 && !testmode) return;
 
     this.gameStarted = true;
 
