@@ -20,11 +20,14 @@ function Game(io)
 
     this.options = require('./gameOptions.json');
 
+    this.gameStarted = false;
+
     this.cards = {"calls":[],"responses":[]};
     this.decks = [];
 
     this.callloops = 0;
     this.drawcards = 0;
+    this.callcard;
 
     this.playersDone = 0;
     this.cardslaid = [];
@@ -52,6 +55,19 @@ Game.prototype.SetupGameServer = function(io)
         self.players.push(socket);
         self.admin = self.players[0];
         self.playerInfo.push(null);
+
+        //If Game is started
+        if(self.gameStarted)
+        {
+            socket.emit("start");
+            
+            var cards = self.cards.responses.splice(0,10);
+            socket.emit("cards",cards);
+            socket.emit("callcard",self.callcard);
+    
+            //replenish the responses
+            self.cards.responses.push(cards);
+        }
 
         self.decks.forEach(function(deck)
         {
@@ -123,19 +139,26 @@ Game.prototype.SetupGameServer = function(io)
         //When a player plays a card
         socket.on("done",function(card)
         {
+            if(isCzar(socket))
+                return;
+
             self.playersDone++;
             var i = self.players.indexOf(socket);
 
             var cardinfo = {"card":card,"player":self.playerInfo[i]}
             self.cardslaid.push(cardinfo);
 
-            if(self.playersDone == self.players.lenght - 2)
+            //-1 because of the czar who does not need to choose
+            if(self.playersDone == self.players.lenght - 1)
             {
                 self.server.emit("showcards",self.cardslaid);
             }
             else
             {
-                self.server.emit("carddone",self.playerInfo[i]);
+                self.players.forEach(function(player)
+                {
+                    if(player != socket) player.emit("carddone",self.playerInfo[i]);
+                },self);
             }
         });
 
@@ -214,6 +237,8 @@ Game.prototype.StartGame = function()
     if(this.decks.lenght == 0) return;
     if(this.players.lenght < 3 && !testmode) return;
 
+    this.gameStarted = true;
+
     //reset previous round
     for(var i = 0; i < this.playerInfo.length; i++)
     {
@@ -236,7 +261,11 @@ Game.prototype.StartGame = function()
         },this);
     },this);
 
-    //TODO:add blanks
+    for(var i = 0; i < this.options.blankcards; i++)
+    {
+        var bcard = {id:"blank" + i, text:"___"};
+        this.cards.responses.push(bcard);
+    }
 
     this.cards.calls = shuffle(this.cards.calls);
     this.cards.responses = shuffle(this.cards.responses);
@@ -247,6 +276,9 @@ Game.prototype.StartGame = function()
     {
         var cards = this.cards.responses.splice(0,10);
         player.emit("cards",cards);
+
+        //replenish the responses
+        this.cards.responses.push(cards);
     },this);
 
 
@@ -254,6 +286,7 @@ Game.prototype.StartGame = function()
     
     var card = this.cards.calls.splice(0,1);
     this.cards.calls.push(card);
+    this.callcard = card;
 
     this.callloops--;
 
@@ -267,6 +300,7 @@ Game.prototype.StartGame = function()
 
 Game.prototype.EndGame = function()
 {
+    this.gameStarted = false;
     this.server.emit("end");
 }
 
@@ -284,11 +318,15 @@ Game.prototype.NextCallCard = function()
 
     this.NextCzar();
     this.server.emit("callcard",card);
+    this.callcard = card;
     
     this.players.forEach(function(player)
     {
         var cards = this.cards.calls.splice(0,this.drawcards);
         player.emit("cards",cards);
+
+        //replenish the responses
+        this.cards.responses.push(cards);
     },this);
 
     this.drawcards = card.numResponses();

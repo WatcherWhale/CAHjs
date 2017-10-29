@@ -29,8 +29,6 @@ div.whitecard
 div.selectedcard
 {
     background: #2196F3;
-
-    float: left;
 }
 
 div.cardbox div.card:last-child
@@ -55,8 +53,8 @@ div.owncards div.card
     width:155px;
     height: 167;
 
-    padding: 13;
-    font-size: 13;
+    padding: 12.333;
+    font-size: 12.333;
 
     cursor: pointer;
 
@@ -69,14 +67,37 @@ div.owncards div.card:hover
     width:207px;
     height: 223;
 
-    font-size: 17;
-    padding: 17;
+    font-size: 16.66666;
+    padding: 16.66666;
 
-    background: #2196F3;
+    /*background: #2196F3;*/
+
+    z-index: 1;
 }
 
 .confirmbtn
 {
     margin-left: 15px;
     width:232;
+}
+
+div.blackcard div.pick
+{
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+
+    color:white;
+}
+
+div.blackcard div.pick div.amount
+{
+    background: white;
+    color: black;
+    border-radius: 50%;
+    display: inline-block;
+
+    height: 30px;
+    width:30px;
+    text-align: center;
 }

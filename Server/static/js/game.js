@@ -2,6 +2,16 @@ var gameSocket = io(window.location.href);
 
 var options;
 
+var selectedCard;
+
+var cardsInHand = [];
+var cardsLaidArray = [];
+var isCzar = false;
+
+var confirmed = true;
+var cardstoLay = 1;
+var cardsLaid = [];
+
 gameSocket.emit("name",{"name":"testplayer","id":"ABC-DFG-HIJ-KLMNOP"});
 
 //#region Options
@@ -84,7 +94,20 @@ gameSocket.on("options",function(opt)
 
 gameSocket.on("cards",function(cards)
 {
-    console.log(cards);
+    var exCard = '<div class="card whitecard" id="%ID%">%TEXT%</div>';
+    cards.forEach(function(card) 
+    {
+        cardsInHand.push(card);
+
+        var c = exCard;
+        c= c.replace("%ID%",card.id);
+        c= c.replace("%TEXT%",card.text);
+
+        $("div.owncards").append(c);
+        $("div.owncards").children().click(CardSelect);
+    }, this);
+
+    confirmed = false;
 });
 
 gameSocket.on("start",function()
@@ -97,16 +120,21 @@ gameSocket.on("callcard",function(card)
 {
     var text = "";
 
-    console.log(card[0]);
-
     card[0].text.forEach(function(txt)
     {
         text += txt + "___";
     },this);
     text = text.substr(0,text.length - "___".length);
 
+    text += '<div class="pick">Pick: <div class="amount">' + card[0].numResponses + '</div></div>';
+
+    cardstoLay = card[0].numResponses;
     $("div.callcard div.card").html(text);
-    console.log(text)
+});
+
+gameSocket.on("carddone",function(playerInfo)
+{
+    $("div.laidcards").append("<div class='card whitecard'></div>");
 });
 
 //#endregion
@@ -117,6 +145,8 @@ $(document).ready(function()
 {
     $(".startscreen :input").attr("disabled", true);
     $("a.start").toggleClass("disabled",true);
+
+    $(".confirmbtn").click(Confirm);
 })
 
 function InputChanged(input,value)
@@ -126,5 +156,74 @@ function InputChanged(input,value)
     gameSocket.emit("options",options);
 }
 
+function CardSelect()
+{
+    if(confirmed) return;
+    
+    selectedCard = $(this).attr("id");
+    $("a.confirmbtn").toggleClass("disabled",false);
+
+    $("div.owncards").children().toggleClass("selectedCard",false);
+
+    $(this).toggleClass("selectedCard",true);
+}
+
+function Confirm()
+{
+    if(isCzar)
+    {
+        isCzar = false;
+        gameSocket.emit("czarChoose",GetLaidCardById(selectedCard));
+    }
+    else
+    {
+        var card = GetCardById(selectedCard);
+
+        cardsLaid.push(card);
+
+        cardsInHand.splice(cardsInHand.indexOf(card),1);
+
+        var c = '<div class="card whitecard">' + card.text + '</div>';
+        $("div.laidcards").append(c);
+
+        $("#" + card.id).remove();
+
+        if(cardsLaid.length == cardstoLay)
+        {
+            gameSocket.emit("done",cardsLaid);
+            cardsLaid = [];
+        }
+
+    }
+}
+
 //#endregion
 
+function GetCardById(id)
+{
+    var c;
+    cardsInHand.forEach(function(card)
+    {
+        if(card.id == id)
+        {
+            console.log("sss");
+            c = card;
+            return;
+        }
+    },this);
+
+    return c;
+}
+
+function GetLaidCardById(id)
+{
+    var c;
+    cardsLaidArray.forEach(function(card)
+    {
+        if(card.card.id == id)
+        {
+            c = card;
+            return;
+        }
+    },this);
+}
