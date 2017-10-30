@@ -133,6 +133,12 @@ gameSocket.on("start",function()
     $("div.playscreen").toggleClass("hiddendiv", false);
 });
 
+gameSocket.on("end",function()
+{
+    $("div.startscreen").toggleClass("hiddendiv", false);
+    $("div.playscreen").toggleClass("hiddendiv", true);
+});
+
 gameSocket.on("callcard",function(card)
 {
     $("div.laidcards").empty();
