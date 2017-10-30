@@ -89,3 +89,8 @@ div.chat div.chatinput
 {
     font-weight: bold;
 }
+
+div.spacing
+{
+    margin-top: 15%;
+}

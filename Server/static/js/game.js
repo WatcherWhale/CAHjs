@@ -12,7 +12,15 @@ var confirmed = true;
 var cardstoLay = 1;
 var cardsLaid = [];
 
-gameSocket.emit("name",{"name":"testplayer","id":"ABC-DFG-HIJ-KLMNOP"});
+if(sessionStorage.getItem("name") == null)
+{
+    sessionStorage.setItem("redirect",window.location.href);
+    window.location.href = "../..";
+}
+else
+{
+    gameSocket.emit("name",{"name":sessionStorage.getItem("name"),"id":sessionStorage.getItem("id")});
+}
 
 //#region Options
 
@@ -226,7 +234,7 @@ function CzarSelect()
 
     if($(this).hasClass("cardbox"))
     {
-        selectedCard = $(this).first().attr("id");
+        selectedCard = $($(this).children()[0]).attr("id");
 
         $("div.laidcards").children().children().toggleClass("selectedCard",false);
         $(this).children().toggleClass("selectedCard",true);
@@ -238,6 +246,8 @@ function CzarSelect()
         $("div.laidcards").children().toggleClass("selectedCard",false);
         $(this).toggleClass("selectedCard",true);
     }
+    console.log(selectedCard);
+    //Dubbele kaarten werken nog niet id wordt niet gevonden
 }
 
 
@@ -258,6 +268,11 @@ function Confirm()
     else
     {
         var card = GetCardById(selectedCard);
+
+        if(selectedCard.Contains("blank"))
+        {
+            card.text = prompt("Type in your custom card...");
+        }
 
         cardsLaid.push(card);
 
@@ -302,7 +317,6 @@ function GetLaidCardHolderById(id)
     var c = null;
     cardsLaidArray.forEach(function(holder)
     {
-        console.log(holder);
         holder.card.forEach(function(card)
         {
             if(card.id == id)

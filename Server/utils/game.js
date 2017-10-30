@@ -8,11 +8,7 @@ function Game(io)
 {
     //Setup variables
     this.id = "test";
-    
-    if(!testmode)
-        this.id = shortid.generate();
-
-        console.log(this.id);
+    if(!testmode) this.id = shortid.generate();
     
     this.admin = null;
     this.czar = null;
@@ -339,7 +335,7 @@ Game.prototype.NextCallCard = function()
     {
         if(!isCzar(player))
         {
-            var cards = this.cards.calls.splice(0,this.drawcards);
+            var cards = this.cards.responses.splice(0,this.drawcards);
             player.emit("cards",cards);
 
             //replenish the responses

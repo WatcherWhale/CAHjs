@@ -52,7 +52,4 @@ app.all("/game/:game",function(req,res)
 http.listen(settings.port,function()
 {
     console.log("Server started on port " + settings.port);
-
-    var game = new Game(io);
-    games.push(game);
 });
