@@ -321,19 +321,11 @@ Game.prototype.NextCallCard = function()
 
     this.server.emit("callcard",card);
     this.callcard = card;
-    
-    function isCzar(s)
-    {
-        if(this.czar == s)
-            return true;
-        else
-            return false;
-    }
 
     var done = false;
     this.players.forEach(function(player)
     {
-        if(!isCzar(player))
+        if(this.czar != player)
         {
             var cards = this.cards.responses.splice(0,this.drawcards);
             player.emit("cards",cards);
