@@ -42,39 +42,29 @@ Game.prototype.SetupGameServer = function(io)
 
     this.server.on('connection',function(socket)
     {
-        //Add player to list
-        if(self.players.length == 0)
+        //Password protection
+        if(self.options.password == "")
         {
-            socket.emit("admin");
+            socket.emit("passProtection",false);
+            self.RegisterSocket(socket);
         }
-
-        socket.emit("options",self.options);
-        
-        self.players.push(socket);
-        self.admin = self.players[0];
-        self.playerInfo.push(null);
-
-        //If Game is started
-        if(self.gameStarted)
+        else
         {
-            socket.emit("start");
+            socket.emit("passProtection",true);
             
-            var cards = self.cards.responses.splice(0,10);
-            socket.emit("cards",cards);
-            socket.emit("callcard",self.callcard);
-    
-            //replenish the responses
-            self.cards.responses.push(cards);
+            socket.on("password",function(pass)
+            {
+                if(pass === self.options.password)
+                {
+                    self.RegisterSocket(socket);
+                    socket.emit("password",true);
+                }
+                else
+                {
+                    socket.emit("password",false);
+                }
+            });
         }
-
-        self.decks.forEach(function(deck)
-        {
-            socket.emit("adddeck",{"name":deck.name,"id":deck.code});
-        });
-
-        //
-        // User Info
-        //
 
         socket.on('disconnect',function()
         {
@@ -88,17 +78,6 @@ Game.prototype.SetupGameServer = function(io)
                 self.admin.emit("admin");
             }
 
-            self.server.emit("playnames",self.playerInfo);
-        });
-
-        //Username tells the server its name and id
-        socket.on("name",function(name)
-        {
-            var i = self.players.indexOf(socket);
-
-            var info = {"name":name.name,"id":name.id,"points":0};
-
-            self.playerInfo[i] = info;
             self.server.emit("playnames",self.playerInfo);
         });
 
@@ -205,6 +184,50 @@ Game.prototype.SetupGameServer = function(io)
             else
                 return false;
         }
+    });
+};
+
+Game.prototype.RegisterSocket = function(socket)
+{
+    //Add player to list
+    if(this.players.length == 0)
+    {
+        socket.emit("admin");
+    }
+
+    socket.emit("options",this.options);
+    
+    this.players.push(socket);
+    this.admin = this.players[0];
+    this.playerInfo.push(null);
+
+    //If Game is started
+    if(this.gameStarted)
+    {
+        socket.emit("start");
+        
+        var cards = this.cards.responses.splice(0,10);
+        socket.emit("cards",cards);
+        socket.emit("callcard",this.callcard);
+
+        //replenish the responses
+        this.cards.responses.push(cards);
+    }
+
+    this.decks.forEach(function(deck)
+    {
+        socket.emit("adddeck",{"name":deck.name,"id":deck.code});
+    });
+
+    //Username tells the server its name and id
+    socket.on("name",function(name)
+    {
+        var i = this.players.indexOf(socket);
+
+        var info = {"name":name.name,"id":name.id,"points":0};
+
+        this.playerInfo[i] = info;
+        this.server.emit("playnames",this.playerInfo);
     });
 };
 

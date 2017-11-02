@@ -17,10 +17,6 @@ if(sessionStorage.getItem("name") == null)
     sessionStorage.setItem("redirect",window.location.href);
     window.location.href = "../..";
 }
-else
-{
-    gameSocket.emit("name",{"name":sessionStorage.getItem("name"),"id":sessionStorage.getItem("id")});
-}
 
 //#region Options
 
@@ -58,6 +54,7 @@ function StartGame()
 
 //#region SocketHandling
 
+//Options
 gameSocket.on("adddeck",function(deck)
 {
     var li = '<li id="' + deck.id + '" class="collection-item"><div>' + deck.name + '<a href="#!" onclick="RemoveDeck(\'' + deck.id
@@ -107,6 +104,34 @@ gameSocket.on("options",function(opt)
     Materialize.updateTextFields();
 
 });
+
+gameSocket.on("passProtection",function(protected)
+{
+    if(protected)
+    {
+        var pass = prompt("Type in the room password");
+        gameSocket.emit("password",pass);
+
+        gameSocket.on("password",function(result)
+        {
+            if(result)
+            {
+                RegisterSocket();
+            }
+            else
+            {
+                var pass = prompt("Type in the room password");
+                gameSocket.emit("password",pass);
+            }
+        });
+    }
+    else
+    {
+        RegisterSocket();
+    }
+});
+
+//Game functionality
 
 gameSocket.on("cards",function(cards)
 {
@@ -201,6 +226,11 @@ gameSocket.on("cardchosen",function(cardsholder)
     },this);
 });
 
+function RegisterSocket()
+{
+    //Register
+    gameSocket.emit("name",{"name":sessionStorage.getItem("name"),"id":sessionStorage.getItem("id")});
+}
 //#endregion
 
 //#region UiHandling
