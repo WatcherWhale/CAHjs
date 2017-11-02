@@ -131,6 +131,11 @@ gameSocket.on("passProtection",function(protected)
     }
 });
 
+gameSocket.on("full",function()
+{
+    window.location.href = "../menu";
+}); 
+
 //Game functionality
 
 gameSocket.on("cards",function(cards)

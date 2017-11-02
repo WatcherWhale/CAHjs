@@ -42,6 +42,11 @@ Game.prototype.SetupGameServer = function(io)
 
     this.server.on('connection',function(socket)
     {
+        if(self.players.length === self.options.maxPlayers)
+        {
+            socket.emit("full");
+        }
+
         //Password protection
         if(self.options.password == "")
         {
