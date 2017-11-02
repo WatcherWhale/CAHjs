@@ -224,14 +224,15 @@ Game.prototype.RegisterSocket = function(socket)
     });
 
     //Username tells the server its name and id
+    var self = this;
     socket.on("name",function(name)
     {
-        var i = this.players.indexOf(socket);
+        var i = self.players.indexOf(socket);
 
         var info = {"name":name.name,"id":name.id,"points":0};
 
-        this.playerInfo[i] = info;
-        this.server.emit("playnames",this.playerInfo);
+        self.playerInfo[i] = info;
+        self.server.emit("playnames",self.playerInfo);
     });
 };
 

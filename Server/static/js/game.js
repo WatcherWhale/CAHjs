@@ -12,12 +12,6 @@ var confirmed = true;
 var cardstoLay = 1;
 var cardsLaid = [];
 
-if(sessionStorage.getItem("name") == null)
-{
-    sessionStorage.setItem("redirect",window.location.href);
-    window.location.href = "../..";
-}
-
 //#region Options
 
 function AddDeck()
@@ -107,7 +101,12 @@ gameSocket.on("options",function(opt)
 
 gameSocket.on("passProtection",function(protected)
 {
-    if(protected)
+    if(sessionStorage.getItem("name") == null || sessionStorage.getItem("name") == "")
+    {
+        sessionStorage.setItem("redirect",window.location.href);
+        window.location.href = "../..";
+    }
+    else if(protected)
     {
         var pass = prompt("Type in the room password");
         gameSocket.emit("password",pass);
