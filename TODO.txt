@@ -1,0 +1,5 @@
+* Fixing menuupdate receive
+* user needs to stay on same id
+* Change menuitem colours
+* make gamechat work
+* leave/join game update
