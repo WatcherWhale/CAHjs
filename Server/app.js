@@ -16,6 +16,8 @@ var users = [];
 var Game = require('./utils/game.js');
 var games = [];
 
+//Socket handling
+
 io.on('connection',function(socket)
 {
     var user = new User(socket);
@@ -44,10 +46,34 @@ io.on('connection',function(socket)
     });
 });
 
+//Routing
+
 app.all("/game/:game",function(req,res)
 {
     res.sendFile(__dirname + "/gamefiles/game.html");
 });
+
+//Check if games are empty and remove them
+setInterval(function()
+{
+    var indexes = [];
+    var offset = 0;
+
+    for(var i = 0; i < games.length; i++)
+    {
+        if(games[i].players.length == 0)
+        {
+            indexes.push(i);
+        }
+    }
+
+    indexes.forEach(function(index)
+    {
+        games.splice(index - offset,1);
+        offset++;
+    },this);
+
+},2*60*60*1000);
 
 http.listen(settings.port,function()
 {
