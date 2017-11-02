@@ -234,6 +234,7 @@ function RegisterSocket()
 {
     //Register
     gameSocket.emit("name",{"name":sessionStorage.getItem("name"),"id":sessionStorage.getItem("id")});
+    //socket.emit("joinedGame");
 }
 //#endregion
 

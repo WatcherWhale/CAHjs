@@ -20,6 +20,8 @@ var games = [];
 
 io.on('connection',function(socket)
 {
+    SendMenuUpdates();
+
     var user = new User(socket);
     users.push(user);
 
@@ -44,19 +46,14 @@ io.on('connection',function(socket)
 
         socket.emit("join",game.id);
     });
+
+    socket.on("joinedGame",UpdateGames);
+    socket.on("leftGame",UpdateGames);
 });
 
-//Routing
-
-app.all("/game/:game",function(req,res)
+function UpdateGames()
 {
-    res.sendFile(__dirname + "/gamefiles/game.html");
-});
-
-//Check if games are empty and remove them
-setInterval(function()
-{
-    var indexes = [];
+    /*var indexes = [];
     var offset = 0;
 
     for(var i = 0; i < games.length; i++)
@@ -67,13 +64,55 @@ setInterval(function()
         }
     }
 
+    console.log(indexes);
+
     indexes.forEach(function(index)
     {
         games.splice(index - offset,1);
         offset++;
-    },this);
+    },this);*/
 
-},2*60*60*1000);
+    SendMenuUpdates();
+}
+
+function SendMenuUpdates()
+{
+    var menuitems = [];
+
+    var menuitem = {id:"",password:"",players:"",title:""};
+    
+    games.forEach(function(game)
+    {
+        var mi = menuitem;
+
+        mi.id = game.id;
+        mi.players = game.players.length + "/" + game.options.maxPlayers;
+        mi.title = game.id;
+        
+        if(game.options.password === "")
+        {
+            mi.password = "no";
+        }
+        else
+        {
+            mi.password = "yes";
+        }
+
+        menuitems.push(mi);
+
+    },this);
+    
+    menuitems.reverse();
+    io.sockets.emit("menuupdate",menuitems);
+}
+
+setInterval(UpdateGames,1000);
+
+//Routing
+app.all("/game/:game",function(req,res)
+{
+    res.sendFile(__dirname + "/gamefiles/game.html");
+});
 
 http.listen(settings.port,function()
 {

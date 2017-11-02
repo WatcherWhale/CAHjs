@@ -5,10 +5,12 @@ socket.on("id",function(uuid)
     sessionStorage.setItem("id",uuid);
 });
 
-socket.on("join",function(game)
+socket.on("join",JoinGame);
+
+function JoinGame(gameid)
 {
-    window.location.href = "/game/" + game;
-});
+    window.location.href = "/game/" + gameid;
+}
 
 if(window.location.href.Contains("menu"))
 {
