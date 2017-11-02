@@ -42,13 +42,12 @@ Game.prototype.SetupGameServer = function(io)
 
     this.server.on('connection',function(socket)
     {
+        //room protection
         if(self.players.length === self.options.maxPlayers)
         {
             socket.emit("full");
         }
-
-        //Password protection
-        if(self.options.password == "")
+        else if(self.options.password == "")
         {
             socket.emit("passProtection",false);
             self.RegisterSocket(socket);
