@@ -73,6 +73,9 @@ Game.prototype.SetupGameServer = function(io)
         socket.on('disconnect',function()
         {
             var i = self.players.indexOf(socket);
+
+            if(i === -1) return
+
             self.players.splice(i,1);
             self.playerInfo.splice(i,1);
 
