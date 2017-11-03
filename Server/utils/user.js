@@ -35,3 +35,16 @@ User.prototype.SetupServerSocketConnection = function()
         this.name = name;
     });
 };
+
+User.prototype.GetClientFreindlyInfo = function()
+{
+    var info = new UserClient(this.id,this.name,this.game);
+    return info;
+};
+
+function UserClient(id,name,game)
+{
+    this.id = id;
+    this.name = name;
+    this.game = game;
+}

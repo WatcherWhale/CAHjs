@@ -1,5 +1,4 @@
-* Fixing menuupdate receive
-* user needs to stay on same id
+* Fix same game in menu
 * Change menuitem colours
 * make gamechat work
 * leave/join game update

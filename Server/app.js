@@ -11,38 +11,79 @@ var io = require("socket.io")(http);
 app.use(express.static('static'));
 
 var User = require('./utils/user.js');
-var users = [];
-
 var Game = require('./utils/game.js');
-var games = [];
+var collector = require("./collector.js");
 
 //Socket handling
 
 io.on('connection',function(socket)
 {
-    SendMenuUpdates();
-
-    var user = new User(socket);
-    users.push(user);
-
-    socket.emit("id",user.GetId());
+    //SendMenuUpdates();
 
     socket.on("disconnect",function()
     {
-        for(var i = 0; i < users.length; i++)
+        for(var i = 0; i < collector.Users.length; i++)
         {
-            if(users[i].socket = socket)
+            if(collector.Users[i].socket = socket)
             {
-                users.splice(i,1);
+                collector.Users[i].socket == null;
+                
+                //Check if user is still disconnected after a period of time
+                var id = collector.Users[i].id;
+                setTimeout(function()
+                {
+                    for (var i = 0; i < collector.Users.length; i++)
+                    {
+                        var user = collector.Users[i];
+                        if(user.id == id && user.socket === null) 
+                        {
+                            collector.Users.splice(i,1);
+                            return;
+                        }
+                    }
+
+                },settings.disconnectTimeout);
+
                 return;
+            }
+        }
+    });
+
+    socket.on("reconnect",function(id)
+    {
+        for (var i = 0; i < collector.Users.length; i++) 
+        {
+            if(collector.Users[i].id == id)
+            {
+                collector.Users[i].socket = socket;
+                socket.emit("reconnected",collector.Users[i].GetClientFreindlyInfo());
+                return;
+            }
+        }
+
+        RegisterUser(socket);
+    });
+
+    socket.on("connectme",function()
+    {
+        RegisterUser(socket);
+    });
+
+    socket.on("forcedisconnect",function()
+    {
+        for(var i = 0; i < collector.Users.length; i++)
+        {
+            if(collector.Users[i].socket = socket)
+            {
+                collector.Users.splice(i,1);
             }
         }
     });
 
     socket.on("createGame",function()
     {
-        var game = new Game(io);
-        games.push(game);
+        var game = new Game(io,collector);
+        collector.Games.push(game);
 
         socket.emit("join",game.id);
     });
@@ -56,9 +97,9 @@ function UpdateGames()
     /*var indexes = [];
     var offset = 0;
 
-    for(var i = 0; i < games.length; i++)
+    for(var i = 0; i < collector.Games.length; i++)
     {
-        if(games[i].players.length == 0)
+        if(collector.Games[i].players.length == 0)
         {
             indexes.push(i);
         }
@@ -68,7 +109,7 @@ function UpdateGames()
 
     indexes.forEach(function(index)
     {
-        games.splice(index - offset,1);
+        collector.Games.splice(index - offset,1);
         offset++;
     },this);*/
 
@@ -81,7 +122,7 @@ function SendMenuUpdates()
 
     var menuitem = {id:"",password:"",players:"",title:""};
     
-    games.forEach(function(game)
+    collector.Games.forEach(function(game)
     {
         var mi = menuitem;
 
@@ -106,7 +147,15 @@ function SendMenuUpdates()
     io.sockets.emit("menuupdate",menuitems);
 }
 
-setInterval(UpdateGames,1000);
+function RegisterUser(socket)
+{
+    var user = new User(socket);
+    collector.Users.push(user);
+
+    socket.emit("userinfo",user.GetClientFreindlyInfo());
+}
+
+setInterval(UpdateGames,settings.menuRefreshTime);
 
 //Routing
 app.all("/game/:game",function(req,res)

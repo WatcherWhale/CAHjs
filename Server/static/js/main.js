@@ -1,11 +1,27 @@
 var socket = io();
+var self;
 
-socket.on("id",function(uuid)
+socket.on("userinfo",function(userinfo)
 {
-    sessionStorage.setItem("id",uuid);
+    sessionStorage.setItem("id",userinfo.id);
+    var self = user;
 });
 
 socket.on("join",JoinGame);
+
+socket.on("reconnected",function(userinfo)
+{
+    self = userinfo;
+});
+
+if(sessionStorage.getItem("id") !== null)
+{
+    socket.emit("reconnect",sessionStorage.getItem("id"));
+}
+else
+{
+    socket.emit("connectme");
+}
 
 function JoinGame(gameid)
 {
@@ -26,6 +42,14 @@ else if(!window.location.href.Contains("game"))
     {
         window.location.href = "menu";
     }
+}
+else
+{
+    var gameid = window.location.href.split('/game/')[1];
+    //remove ending '/' if it is added to the url
+    gameid.replace('/','');
+
+    socket.emit("joinedGame",gameid);
 }
 
 function Login()
