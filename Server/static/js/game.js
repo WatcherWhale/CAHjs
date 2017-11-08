@@ -230,6 +230,8 @@ gameSocket.on("cardchosen",function(cardsholder)
     },this);
 });
 
+gameSocket.on("chat",ListChatMessage);
+
 function RegisterSocket()
 {
     //Register
@@ -291,7 +293,6 @@ function CzarSelect()
     //Dubbele kaarten werken nog niet id wordt niet gevonden
 }
 
-
 function Confirm()
 {
     $("a.confirmbtn").toggleClass("disabled",true);
@@ -333,6 +334,26 @@ function Confirm()
         }
 
     }
+}
+
+function ListChatMessage(msg)
+{
+    var li = '<li class="collection-item">' + msg + '</li>';
+    $(".chatcontainer ul").append(li);
+    //animate to bottom
+    $('.chatcontainer').animate({scrollTop:$('.chatcontainer')[0].scrollHeight}, 1000);
+}
+
+function SendMessage()
+{
+    var msg = $("input#chattext").val();
+    
+    $("input#chattext").val("");
+    Materialize.updateTextFields();
+
+    msg = "<b>" + sessionStorage.getItem("name") + ":</b> " + msg;
+    ListChatMessage(msg);
+    gameSocket.emit("chat",msg); 
 }
 
 //#endregion

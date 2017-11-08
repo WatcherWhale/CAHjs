@@ -4,15 +4,19 @@ var CardCast = require('../modules/cardcast.js');
 
 var testmode = false;
 
-function Game(io)
+function Game(io,collector)
 {
     //Setup variables
+    this.collector = collector;
+
     this.id = "test";
     if(!testmode) this.id = shortid.generate();
     
     this.admin = null;
     this.czar = null;
+
     this.players = [];
+    this.users = [];
     //{"name":"username","id":"userid","points":0}
     this.playerInfo = [];
 
@@ -203,10 +207,11 @@ Game.prototype.RegisterSocket = function(socket)
     }
 
     socket.emit("options",this.options);
-    
+
     this.players.push(socket);
     this.admin = this.players[0];
     this.playerInfo.push(null);
+    this.users.push(null);
 
     //If Game is started
     if(this.gameStarted)
@@ -235,6 +240,16 @@ Game.prototype.RegisterSocket = function(socket)
         var info = {"name":name.name,"id":name.id,"points":0};
 
         self.playerInfo[i] = info;
+
+        self.collector.Users.forEach(function(user)
+        {
+            if(user.GetId() == name.id)
+            {
+                user.gameSocket = socket;
+                user.game = this.id;
+            }
+        },self);
+
         self.server.emit("playnames",self.playerInfo);
     });
 };
