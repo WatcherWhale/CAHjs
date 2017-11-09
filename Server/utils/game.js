@@ -104,7 +104,7 @@ Game.prototype.SetupGameServer = function(io)
                 self.LoadDeck(socket,deckid);
         });
 
-        //Change Password
+        //Change Options
         socket.on("options",function(options)
         {
             if(isAdmin(socket))
@@ -441,7 +441,7 @@ Game.prototype.CzarChoose = function(card)
     {
         if(endgame)
         {
-            //End game function
+            self.EndGame();
         }
         else
         {

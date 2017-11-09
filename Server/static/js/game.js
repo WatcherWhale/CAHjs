@@ -86,13 +86,13 @@ gameSocket.on("czar",function()
 gameSocket.on("options",function(opt)
 {
     options = opt;
-    $("input#maxpoints").val(options.maxpoints);
-    $("input#maxplayers").val(options.maxplayers);
+    $("input#maxpoints").val(options.maxPoints);
+    $("input#maxplayers").val(options.maxPlayers);
     $("input#blankcards").val(options.blankcards);
     $("input#password").val(options.password);
 
-    $("label span#maxpoints").html(options.maxpoints);
-    $("label span#maxplayers").html(options.maxplayers);
+    $("label span#maxpoints").html(options.maxPoints);
+    $("label span#maxplayers").html(options.maxPlayers);
     $("label span#blankcards").html(options.blankcards);
 
     Materialize.updateTextFields();
