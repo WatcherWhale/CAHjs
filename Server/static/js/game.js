@@ -55,6 +55,8 @@ gameSocket.on("adddeck",function(deck)
         + '\')" class="secondary-content"><i class="material-icons">clear</i></a></div></li>';
 
     $("div.adddecks div.decks").append(li);
+
+    EnableDisableStartButton();
 });
 
 gameSocket.on("playnames",function(playnames)
@@ -66,6 +68,8 @@ gameSocket.on("playnames",function(playnames)
         var li = '<li class="collection-item" id="' + playname.id + '"><div>' + playname.name 
             + '<span class="secondary-content bold">' + playname.points + '</span></div></li>';
         $("div.points div#playercollection").append(li);
+
+        EnableDisableStartButton();
     });
 });
 
@@ -354,6 +358,16 @@ function SendMessage()
     msg = "<b>" + sessionStorage.getItem("name") + ":</b> " + msg;
     ListChatMessage(msg);
     gameSocket.emit("chat",msg); 
+}
+
+function EnableDisableStartButton()
+{
+    var decks = $("div.adddecks div.decks").children().length >= 1;
+    var players = $("div.points div#playercollection").children().length >= 3;
+
+    var enabled = decks && players;
+
+    $("a.start").toggleClass("disabled",!enabled);
 }
 
 //#endregion
