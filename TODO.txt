@@ -1,4 +1,8 @@
 * Fix same game in menu
 * Change menuitem colours
-* make gamechat work
 * leave/join game update
+* Remove CardcastDecks
+* Display Card Czar
+* Clear Cards after GameEnd
+* Default Decks
+* GameEnd Crash
