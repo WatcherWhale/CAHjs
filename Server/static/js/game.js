@@ -235,6 +235,14 @@ gameSocket.on("showcards",function(cardsholder)
 {
     $("div.laidcards").empty();
 
+    $("div.points div#playercollection li").each(function()
+    {
+        if($(this).find("span.status").html() != "Czar")
+        {
+            $(this).find("span.status").html("");
+        }
+    });
+
     cardsholder.forEach(function(holder)
     {
         cardsLaidArray.push(holder);
