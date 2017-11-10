@@ -7,10 +7,13 @@ var selectedCard;
 var cardsInHand = [];
 var cardsLaidArray = [];
 var isCzar = false;
+var isAdmin = false;
 
 var confirmed = true;
 var cardstoLay = 1;
 var cardsLaid = [];
+
+var addingDecks = 0;
 
 //#region Options
 
@@ -22,6 +25,9 @@ function AddDeck()
     Materialize.updateTextFields();
 
     gameSocket.emit("deck",deck);
+
+    addingDecks++;
+    $("div.progress").toggleClass("hide", addingDecks == 0);
 }
 
 function RemoveDeck(deckid)
@@ -56,27 +62,47 @@ gameSocket.on("adddeck",function(deck)
 
     $("div.adddecks div.decks").append(li);
 
+    addingDecks--;
+    if(addingDecks < 0) addingDecks = 0;
+
+    $("div.progress").toggleClass("hide", addingDecks == 0);
+
     EnableDisableStartButton();
 });
 
 gameSocket.on("playnames",function(playnames)
 {
-    $("div.points div#playercollection").empty();
-
     playnames.forEach(function(playname) 
     {
-        var li = '<li class="collection-item" id="' + playname.id + '"><div>' + playname.name 
-            + '<span class="secondary-content bold">' + playname.points + '</span></div></li>';
-        $("div.points div#playercollection").append(li);
-
-        EnableDisableStartButton();
+        if($("div.points div#playercollection li#" + playname.id).length <= 0)
+        {
+            var li = '<li class="collection-item" id="' + playname.id + '"><div>' + playname.name
+                + '<span class="status"></span>'
+                + '<span class="secondary-content bold points">' + playname.points + '</span></div></li>';
+            $("div.points div#playercollection").append(li);
+        }
+        else
+        {
+            $("div.points div#playercollection li#" + playname.id + " span.points").html(playname.points);
+        }
     });
+
+    $("div.points div#playercollection li").each(function()
+    {
+        if(!playnames.ContainsElement("id", $(this).attr("id")))
+        {
+            $(this).remove();
+        }
+    });
+
+    EnableDisableStartButton();
 });
 
 gameSocket.on("admin",function()
 {
     $(".startscreen :input").attr("disabled", false);
-    $("a.start").toggleClass("disabled",false);
+    isAdmin = true;
+    EnableDisableStartButton();
 });
 
 gameSocket.on("czar",function()
@@ -85,6 +111,11 @@ gameSocket.on("czar",function()
 
     var div = '<div class="czar box">You are the card czar!</div>';
     $("div.owncards").append(div);
+});
+
+gameSocket.on("newczar",function(czarInfo)
+{
+    $("div#playercollection li#" + czarInfo.id + " span.status").html("Czar");
 });
 
 gameSocket.on("options",function(opt)
@@ -170,11 +201,15 @@ gameSocket.on("end",function()
 {
     $("div.startscreen").toggleClass("hiddendiv", false);
     $("div.playscreen").toggleClass("hiddendiv", true);
+
+    $("div.owncards").empty();
 });
 
 gameSocket.on("callcard",function(card)
 {
     $("div.laidcards").empty();
+
+    $("div#playercollection li").children().find("span.status").html("Playing");
 
     var text = "";
 
@@ -193,6 +228,7 @@ gameSocket.on("callcard",function(card)
 gameSocket.on("carddone",function(playerInfo)
 {
     $("div.laidcards").append("<div class='card whitecard'></div>");
+    $("div.points div#playercollection li#" + playerInfo.id + " span.status").html("");
 });
 
 gameSocket.on("showcards",function(cardsholder)
@@ -332,11 +368,12 @@ function Confirm()
         if(cardsLaid.length == cardstoLay)
         {
             gameSocket.emit("done",cardsLaid);
+            $("div.points div#playercollection li#" + sessionStorage.getItem("id") + " span.status").html("");
+
             cardsLaid = [];
 
             confirmed = true;
         }
-
     }
 }
 
@@ -364,8 +401,9 @@ function EnableDisableStartButton()
 {
     var decks = $("div.adddecks div.decks").children().length >= 1;
     var players = $("div.points div#playercollection").children().length >= 3;
+    var decksLoading = addingDecks == 0;
 
-    var enabled = decks && players;
+    var enabled = decks && players && isAdmin && !decksLoading;
 
     $("a.start").toggleClass("disabled",!enabled);
 }

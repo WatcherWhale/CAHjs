@@ -96,3 +96,10 @@ div.spacing
 {
     margin-top: 15%;
 }
+
+div.progress
+{
+    border-radius: 0px;
+    margin: -10px 0 1rem -30;
+    width: 130%;
+}

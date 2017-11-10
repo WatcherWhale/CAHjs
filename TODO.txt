@@ -2,7 +2,5 @@
 * Change menuitem colours
 * leave/join game update
 * Remove CardcastDecks
-* Display Card Czar
-* Clear Cards after GameEnd
 * Default Decks
-* GameEnd Crash
+* GameEnd Crash can't play anymore

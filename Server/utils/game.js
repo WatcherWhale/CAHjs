@@ -137,7 +137,7 @@ Game.prototype.SetupGameServer = function(io)
             self.cardslaid.push(cardinfo);
 
             //-1 because of the czar who does not need to choose
-            if(self.playersDone == self.playerInfo.length - 1)
+            if(self.playersDone == self.players.length - 1)
             {
                 self.cardslaid = shuffle(self.cardslaid);
                 self.server.emit("showcards",self.cardslaid);
@@ -404,6 +404,8 @@ Game.prototype.NextCzar = function()
         var r = Math.round(Math.random() * (this.players.length - 1));
 
         this.czar = this.players[r];
+
+        this.server.emit("newczar", this.playerInfo[r]);
     }
     else
     {
@@ -412,6 +414,7 @@ Game.prototype.NextCzar = function()
         if(i == this.players.length) i = 0;
 
         this.czar = this.players[i];
+        this.server.emit("newczar", this.playerInfo[i]);
     }
 
     this.czar.emit("czar");

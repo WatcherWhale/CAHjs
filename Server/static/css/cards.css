@@ -133,3 +133,11 @@ div.czar
 {
     background: #2196F3;
 }
+
+div.points div#playercollection li span.status
+{
+    position: absolute;
+    right: 50px;
+
+    color: #26a69a;
+}
