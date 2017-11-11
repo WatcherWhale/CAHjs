@@ -1,5 +1,3 @@
 * Fix same game in menu
 * Change menuitem colours
 * leave/join game update
-* Remove CardcastDecks
-* Default Decks
