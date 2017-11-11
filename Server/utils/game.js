@@ -129,7 +129,7 @@ Game.prototype.SetupGameServer = function(io)
         {
             if(isCzar(socket))
                 return;
-
+            
             self.playersDone++;
             var i = self.players.indexOf(socket);
 
@@ -137,6 +137,7 @@ Game.prototype.SetupGameServer = function(io)
             self.cardslaid.push(cardinfo);
 
             //-1 because of the czar who does not need to choose
+
             if(self.playersDone == self.players.length - 1)
             {
                 self.cardslaid = shuffle(self.cardslaid);
@@ -346,6 +347,15 @@ Game.prototype.StartGame = function()
 Game.prototype.EndGame = function()
 {
     this.gameStarted = false;
+
+    this.cards.calls = [];
+    this.cards.responses = [];
+    this.cardslaid = [];
+    this.callcard = null;
+    this.drawcards = 0;
+    this.playersDone = 0;
+    this.czar = null;
+
     this.server.emit("end");
 }
 
@@ -423,6 +433,7 @@ Game.prototype.NextCzar = function()
 Game.prototype.CzarChoose = function(card)
 {
     var endgame = false;
+    var winner;
     for(var i = 0; i < this.players.length; i++)
     {
         if(card.player.id == this.playerInfo[i].id)
@@ -432,6 +443,7 @@ Game.prototype.CzarChoose = function(card)
             if(this.playerInfo[i].points == this.options.maxPoints)
             {
                 endgame = true;
+                winner = this.playerInfo[i];
             }
         }
     }

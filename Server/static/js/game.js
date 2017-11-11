@@ -102,6 +102,7 @@ gameSocket.on("admin",function()
 {
     $(".startscreen :input").attr("disabled", false);
     isAdmin = true;
+
     EnableDisableStartButton();
 });
 
@@ -202,7 +203,20 @@ gameSocket.on("end",function()
     $("div.startscreen").toggleClass("hiddendiv", false);
     $("div.playscreen").toggleClass("hiddendiv", true);
 
+    $("div.points div#playercollection li").each(function()
+    {
+        if($(this).find("span.status").html() != "Winner")
+        {
+            $(this).find("span.status").html("");
+        }
+    });
+
     $("div.owncards").empty();
+});
+
+gameSocket.on("winner",function(playerinfo)
+{
+    $("div.points div#playercollection li#" + playerinfo.id + " span.status").html("Winner")
 });
 
 gameSocket.on("callcard",function(card)
@@ -411,7 +425,7 @@ function EnableDisableStartButton()
     var players = $("div.points div#playercollection").children().length >= 3;
     var decksLoading = addingDecks == 0;
 
-    var enabled = decks && players && isAdmin && !decksLoading;
+    var enabled = decks && players && isAdmin && decksLoading;
 
     $("a.start").toggleClass("disabled",!enabled);
 }
