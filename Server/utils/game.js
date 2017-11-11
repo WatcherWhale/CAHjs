@@ -104,6 +104,22 @@ Game.prototype.SetupGameServer = function(io)
                 self.LoadDeck(socket,deckid);
         });
 
+        socket.on("removedeck",function(deckid)
+        {
+            self.server.emit("removedeck",deckid);
+
+            var offset = 0;
+            for (var i = 0; i < self.decks.length; i++) 
+            {
+                const deck = self.decks[i];
+                if(deck.code == deckid)
+                {
+                    self.decks.splice(i - offset,1);
+                    offset++;
+                }
+            }
+        });
+
         //Change Options
         socket.on("options",function(options)
         {
