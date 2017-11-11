@@ -103,3 +103,8 @@ div.progress
     margin: -10px 0 1rem -30;
     width: 130%;
 }
+
+a
+{
+    cursor:pointer;
+}
