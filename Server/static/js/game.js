@@ -34,7 +34,6 @@ function RemoveDeck(deckid)
 {
     //remove list item
     gameSocket.emit("removedeck",deckid);
-    $("div.adddecks div.decks li#" + deckid).remove();
 }
 
 function SetPassword()
@@ -68,6 +67,11 @@ gameSocket.on("adddeck",function(deck)
     $("div.progress").toggleClass("hide", addingDecks == 0);
 
     EnableDisableStartButton();
+});
+
+gameSocket.on("removedeck",function(id)
+{
+    $("div.decks li#" + id).remove();
 });
 
 gameSocket.on("playnames",function(playnames)
