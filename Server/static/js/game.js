@@ -175,6 +175,8 @@ gameSocket.on("full",function()
     window.location.href = "../menu";
 }); 
 
+gameSocket.on("defDecks",PopulateDefDecks);
+
 //Game functionality
 
 gameSocket.on("cards",function(cards)
@@ -314,6 +316,45 @@ $(document).ready(function()
     $("a.start").toggleClass("disabled",true);
 
     $(".confirmbtn").click(Confirm);
+
+    setTimeout(() => {LocateAddButton();},500);
+
+    $("div.defDecks").hide();
+
+    var timeoutId;
+    var noHide = false;
+    $("#AddDeckBtn").hover(function() 
+    {
+        if (!timeoutId)
+        {
+            timeoutId = window.setTimeout(function()
+            {
+                timeoutId = null;
+                $("div.defDecks").fadeIn();
+           }, 1000);
+        }
+    });
+
+    $("#AddDeckBtn").mouseleave(function () 
+    {
+        if (timeoutId) 
+        {
+            window.clearTimeout(timeoutId);
+            timeoutId = null;
+        }
+        else if(!noHide)
+        {
+           $("div.defDecks").fadeOut();
+        }
+    });
+
+    $("div.defDecks").mouseenter(function(){noHide = true;});
+
+    $("div.defDecks").mouseleave(function() 
+    {
+        noHide = false;
+        $("div.defDecks").fadeOut();
+    });
 })
 
 function InputChanged(input,value)
@@ -434,6 +475,21 @@ function EnableDisableStartButton()
     $("a.start").toggleClass("disabled",!enabled);
 }
 
+function LocateAddButton()
+{
+    var offset = $("#AddDeckBtn").offset();
+    $("div.defDecks").offset({ top: offset.top + 22.5, left: offset.left + -3.5152});
+}
+
+function PopulateDefDecks(decks)
+{
+    console.log(decks);
+    decks.forEach(function(deck)
+    {
+        var li = '<li class="collection-item"><input type="checkbox" id="' + deck.code + '" /><label for="' + deck.code + '">' + deck.name + '</label></li>';
+        $("div.defDecks ul").append(li);
+    });
+}
 //#endregion
 
 function GetCardById(id)

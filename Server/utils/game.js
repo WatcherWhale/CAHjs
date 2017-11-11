@@ -1,3 +1,8 @@
+var fs = require('fs');
+var path = require('path');
+var os = require('os');
+
+
 var shortid = require('shortid');
 var shuffle = require('shuffle-array');
 var CardCast = require('../modules/cardcast.js');
@@ -268,6 +273,7 @@ Game.prototype.RegisterSocket = function(socket)
         },self);
 
         self.server.emit("playnames",self.playerInfo);
+        socket.emit("defDecks",self.collector.DefaultDecks);
     });
 };
 
@@ -280,6 +286,17 @@ Game.prototype.LoadDeck = function(socket,deckid)
             exists = true;
     });
 
+    for (var i = 0; i < this.collector.DefaultDecks.length; i++)
+    {
+        if(this.collector.DefaultDecks[i].code == deckid)
+        {
+            this.decks.push(this.collector.DefaultDecks[i]);
+            this.server.emit("adddeck",{"name":this.collector.DefaultDecks[i].name,"id":deckid});
+            return;
+        }
+
+    }
+
     var self = this;
     CardCast.GetDeck(deckid,function(err,deck)
     {
@@ -289,6 +306,7 @@ Game.prototype.LoadDeck = function(socket,deckid)
             return;
         }
         
+        deck["defaultDeck"] = false;
         self.decks.push(deck);
         self.server.emit("adddeck",{"name":deck.name,"id":deckid});
     });
@@ -312,15 +330,22 @@ Game.prototype.StartGame = function()
     //Load cards from decks
     this.decks.forEach(function(deck) 
     {
-        deck.calls.forEach(function(card)
+        if(deck.defaultDeck)
         {
-            this.cards.calls.push(card);
-        },this);
+            this.LoadDefaultDeck(deck);
+        }
+        else
+        {
+            deck.calls.forEach(function(card)
+            {
+                this.cards.calls.push(card);
+            },this);
 
-        deck.responses.forEach(function(card)
-        {
-            this.cards.responses.push(card);
-        },this);
+            deck.responses.forEach(function(card)
+            {
+                this.cards.responses.push(card);
+            },this);
+        }
     },this);
 
     for(var i = 0; i < this.options.blankcards; i++)
@@ -480,5 +505,29 @@ Game.prototype.CzarChoose = function(card)
         }
     },5000);
 }
+
+Game.prototype.LoadDefaultDeck = function(deck)
+{
+    var resLines = fs.readFileSync(path.join(deck.path,"white.txt"),"utf8");
+    var resCardsText = resLines.split(/[\r\n]+/);
+    
+    for (var i = 0; i < resCardsText.length; i++) 
+    {
+        var cardRText = resCardsText[i];
+        var card = {"id":deck.code + "r" + i,"text":cardRText};
+        this.cards.responses.push(card);
+    }
+
+    var callLines = fs.readFileSync(path.join(deck.path,"black.txt"),"utf8");
+
+    var callCardsText = callLines.split(/[\r\n]+/);
+    
+    for (var i = 0; i < callCardsText.length; i++) 
+    {
+        var cardCText = callCardsText[i];
+        var card = {"id":deck.code + "c" + i,"text":cardCText.split("_"),"numResponses":cardCText.split("_").length - 1};
+        this.cards.calls.push(card);
+    }
+};
 
 module.exports = Game;

@@ -141,3 +141,16 @@ div.points div#playercollection li span.status
 
     color: #26a69a;
 }
+
+div.defDecks
+{
+    position: absolute;
+    z-index: 999;
+
+    width: 300px;
+    height: 400px;
+
+    background: white;
+
+    overflow-y: auto;
+}
