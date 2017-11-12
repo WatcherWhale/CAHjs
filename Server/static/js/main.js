@@ -74,3 +74,14 @@ function CreateGame()
 {
     socket.emit("createGame");
 }
+
+$(window).ready(function()
+{
+    $('input#name').keyup(function(e)
+    {
+        if(e.keyCode == 13)
+        {
+            Login();
+        }
+    });
+});

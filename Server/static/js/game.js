@@ -382,6 +382,23 @@ $(document).ready(function()
         noHide = false;
         $("div.defDecks").fadeOut();
     });
+
+
+    $('div.adddecks input#deck').keyup(function(e)
+    {
+        if(e.keyCode == 13)
+        {
+            AddDeck();
+        }
+    });
+
+    $('input#chattext').keyup(function(e)
+    {
+        if(e.keyCode == 13)
+        {
+            SendMessage();
+        }
+    });
 })
 
 function InputChanged(input,value)
