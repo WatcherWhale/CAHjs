@@ -110,7 +110,7 @@ Game.prototype.SetupGameServer = function(io)
         socket.on("addDefDeck",function(deckid)
         {
             if(isAdmin(socket))
-                self.LoadDefDeck(socket,deckid);
+                self.AddDefDeck(socket,deckid);
         });
 
         //Remove Deck
@@ -321,7 +321,7 @@ Game.prototype.LoadDeck = function(socket,deckid)
     });
 };
 
-Game.prototype.LoadDefDeck = function(socket,deckid)
+Game.prototype.AddDefDeck = function(socket,deckid)
 {
     for (var i = 0; i < this.decks.length; i++)
     {
@@ -555,7 +555,14 @@ Game.prototype.LoadDefaultDeck = function(deck)
     for (var i = 0; i < callCardsText.length; i++) 
     {
         var cardCText = callCardsText[i];
-        var card = {"id":deck.code + "c" + i,"text":cardCText.split("_"),"numResponses":cardCText.split("_").length - 1};
+
+        var splitArray = cardCText.split("_");
+        if(splitArray.length == 1)
+        {
+            splitArray.push('');
+        }
+
+        var card = {"id":deck.code + "c" + i,"text":splitArray,"numResponses":splitArray.length - 1};
         this.cards.calls.push(card);
     }
 };
