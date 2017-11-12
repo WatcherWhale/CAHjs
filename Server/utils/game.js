@@ -97,22 +97,25 @@ Game.prototype.SetupGameServer = function(io)
             self.server.emit("playnames",self.playerInfo);
         });
 
-        //
-        // Server Settings
-        //
+        //#region Options
 
         //Add deck
         socket.on("deck",function(deckid)
         {
-
             if(isAdmin(socket))
                 self.LoadDeck(socket,deckid);
         });
 
+        //Add Default Deck
+        socket.on("addDefDeck",function(deckid)
+        {
+            if(isAdmin(socket))
+                self.LoadDefDeck(socket,deckid);
+        });
+
+        //Remove Deck
         socket.on("removedeck",function(deckid)
         {
-            self.server.emit("removedeck",deckid);
-
             var offset = 0;
             for (var i = 0; i < self.decks.length; i++) 
             {
@@ -121,6 +124,8 @@ Game.prototype.SetupGameServer = function(io)
                 {
                     self.decks.splice(i - offset,1);
                     offset++;
+
+                    self.server.emit("removedeck",{"id":deck.code,"defaultDeck":deck.defaultDeck});
                 }
             }
         });
@@ -135,9 +140,9 @@ Game.prototype.SetupGameServer = function(io)
             }
         });
 
-        //
-        // Game socket handler
-        //
+        //#endregion
+
+        //#region Game Handling Socket Events
         
         socket.on("startGame",function()
         {
@@ -182,10 +187,9 @@ Game.prototype.SetupGameServer = function(io)
             }
         });
 
-        //
-        // ETC
-        //
+        //#endregion
 
+        //#region Etc
         socket.on("chat",function(msg)
         {
             self.players.forEach(function(player)
@@ -194,10 +198,6 @@ Game.prototype.SetupGameServer = function(io)
                     player.emit("chat",msg);
             });
         });
-
-        //
-        // Ceck if
-        //
 
         //Check if admin
         function isAdmin(s)
@@ -217,6 +217,8 @@ Game.prototype.SetupGameServer = function(io)
             else
                 return false;
         }
+
+        //#endregion
     });
 };
 
@@ -250,7 +252,14 @@ Game.prototype.RegisterSocket = function(socket)
 
     this.decks.forEach(function(deck)
     {
-        socket.emit("adddeck",{"name":deck.name,"id":deck.code});
+        if(deck.defaultDeck)
+        {
+            socket.emit("adddefdeck",{"name":deck.name,"id":deck.code});
+        }
+        else
+        {
+            socket.emit("adddeck",{"name":deck.name,"id":deck.code});
+        }
     });
 
     //Username tells the server its name and id
@@ -279,22 +288,22 @@ Game.prototype.RegisterSocket = function(socket)
 
 Game.prototype.LoadDeck = function(socket,deckid)
 {
-    var exists = false;
-    this.decks.forEach(function(deck)
+    for (var i = 0; i < this.decks.length; i++)
     {
+        var deck = this.decks[i];
+
         if(deck.code == deckid)
-            exists = true;
-    });
+            return;
+    }
 
     for (var i = 0; i < this.collector.DefaultDecks.length; i++)
     {
         if(this.collector.DefaultDecks[i].code == deckid)
         {
             this.decks.push(this.collector.DefaultDecks[i]);
-            this.server.emit("adddeck",{"name":this.collector.DefaultDecks[i].name,"id":deckid});
+            this.server.emit("adddefdeck",{"name":this.collector.DefaultDecks[i].name,"id":deckid});
             return;
         }
-
     }
 
     var self = this;
@@ -310,6 +319,27 @@ Game.prototype.LoadDeck = function(socket,deckid)
         self.decks.push(deck);
         self.server.emit("adddeck",{"name":deck.name,"id":deckid});
     });
+};
+
+Game.prototype.LoadDefDeck = function(socket,deckid)
+{
+    for (var i = 0; i < this.decks.length; i++)
+    {
+        var deck = this.decks[i];
+
+        if(deck.code == deckid)
+            return;
+    }
+
+    for (var i = 0; i < this.collector.DefaultDecks.length; i++)
+    {
+        if(this.collector.DefaultDecks[i].code == deckid)
+        {
+            this.decks.push(this.collector.DefaultDecks[i]);
+            this.server.emit("adddefdeck",{"name":this.collector.DefaultDecks[i].name,"id":deckid});
+            return;
+        }
+    }
 };
 
 Game.prototype.StartGame = function()

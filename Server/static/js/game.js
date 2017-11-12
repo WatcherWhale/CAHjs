@@ -14,6 +14,7 @@ var cardstoLay = 1;
 var cardsLaid = [];
 
 var addingDecks = 0;
+var defDecks = 0;
 
 //#region Options
 
@@ -69,9 +70,30 @@ gameSocket.on("adddeck",function(deck)
     EnableDisableStartButton();
 });
 
-gameSocket.on("removedeck",function(id)
+gameSocket.on("adddefdeck",function(deck)
 {
-    $("div.decks li#" + id).remove();
+    $("div.defDecks ul li input#" + deck.id).prop('checked', true);
+    defDecks++;
+
+    addingDecks--;
+    if(addingDecks < 0) addingDecks = 0;
+
+    $("div.progress").toggleClass("hide", addingDecks == 0);
+
+    EnableDisableStartButton();
+});
+
+gameSocket.on("removedeck",function(deck)
+{
+    if(deck.defaultDeck)
+    {
+        $("div.defDecks ul li input#" + deck.id).prop('checked', false);
+        defDecks--;
+    }
+    else
+    {
+        $("div.decks li#" + deck.id).remove();
+    }
 });
 
 gameSocket.on("playnames",function(playnames)
@@ -105,7 +127,10 @@ gameSocket.on("playnames",function(playnames)
 gameSocket.on("admin",function()
 {
     $(".startscreen :input").attr("disabled", false);
+    $(".startscreen a#AddDeckBtn").attr("disabled", false);
     isAdmin = true;
+
+    $("div.defDecks ul li").children().attr("disabled",false);
 
     EnableDisableStartButton();
 });
@@ -330,6 +355,7 @@ $(document).ready(function()
             timeoutId = window.setTimeout(function()
             {
                 timeoutId = null;
+                LocateAddButton();
                 $("div.defDecks").fadeIn();
            }, 1000);
         }
@@ -466,7 +492,7 @@ function SendMessage()
 
 function EnableDisableStartButton()
 {
-    var decks = $("div.adddecks div.decks").children().length >= 1;
+    var decks = $("div.adddecks div.decks").children().length >= 1 || defDecks >= 1;
     var players = $("div.points div#playercollection").children().length >= 3;
     var decksLoading = addingDecks == 0;
 
@@ -477,17 +503,31 @@ function EnableDisableStartButton()
 
 function LocateAddButton()
 {
+    $("div.defDecks").css({"top":0,"left":0});
     var offset = $("#AddDeckBtn").offset();
     $("div.defDecks").offset({ top: offset.top + 22.5, left: offset.left + -3.5152});
 }
 
 function PopulateDefDecks(decks)
 {
-    console.log(decks);
     decks.forEach(function(deck)
     {
         var li = '<li class="collection-item"><input type="checkbox" id="' + deck.code + '" /><label for="' + deck.code + '">' + deck.name + '</label></li>';
         $("div.defDecks ul").append(li);
+    });
+
+    if(!isAdmin) $("div.defDecks ul li").children().attr("disabled",true);
+    
+    $("div.defDecks ul li input").change(function() 
+    {
+        if(this.checked)
+        {
+            gameSocket.emit("addDefDeck",$(this).attr("id"));
+        }
+        else
+        {
+            gameSocket.emit("removedeck",$(this).attr("id"));
+        }
     });
 }
 //#endregion
