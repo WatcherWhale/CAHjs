@@ -21,6 +21,7 @@ var defDecks = 0;
 function AddDeck()
 {
     var deck = $("input#deck").val();
+    if(deck == "" || deck == null) return;
     
     $("input#deck").val("");
     Materialize.updateTextFields();
