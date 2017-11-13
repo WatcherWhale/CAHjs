@@ -503,8 +503,7 @@ function SendMessage()
     $("input#chattext").val("");
     Materialize.updateTextFields();
 
-    msg = "<b>" + sessionStorage.getItem("name") + ":</b> " + msg;
-    ListChatMessage(msg);
+    msg = msg.SafeForWeb();
     gameSocket.emit("chat",msg); 
 }
 

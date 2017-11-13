@@ -4,7 +4,7 @@ var self;
 socket.on("userinfo",function(userinfo)
 {
     sessionStorage.setItem("id",userinfo.id);
-    var self = user;
+    var self = userinfo;
 });
 
 socket.on("join",JoinGame);
@@ -55,6 +55,7 @@ else
 function Login()
 {
     var name = $("input#name").val();
+    name = name.SafeForWeb();
     sessionStorage.setItem("name",name);
 
     if(sessionStorage.getItem("redirect") != null)

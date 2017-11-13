@@ -3,6 +3,15 @@ String.prototype.Contains = function(str)
     return this.indexOf(str) != -1;
 }
 
+String.prototype.SafeForWeb = function()
+{
+    var outputStr = this.replace("<","&lt;");
+    outputStr = outputStr.replace(">","&gt;");
+    outputStr = outputStr.replace("\"","&quot;");
+
+    return outputStr;
+};
+
 Array.prototype.Contains = function(element)
 {
     return this.indexOf(element) != -1;

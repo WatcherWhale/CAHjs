@@ -2,10 +2,11 @@ var fs = require('fs');
 var path = require('path');
 var os = require('os');
 
-
 var shortid = require('shortid');
 var shuffle = require('shuffle-array');
 var CardCast = require('../modules/cardcast.js');
+var Security = require('../modules/security.js');
+
 
 var testmode = false;
 
@@ -192,10 +193,10 @@ Game.prototype.SetupGameServer = function(io)
         //#region Etc
         socket.on("chat",function(msg)
         {
+            var name = self.playerInfo[self.players.indexOf(socket)].name;
             self.players.forEach(function(player)
             {
-                if(player != socket)
-                    player.emit("chat",msg);
+                player.emit("chat","<b>" + Security.SafeForWeb(name) + "</b>: " + Security.SafeForWeb(msg));
             });
         });
 
