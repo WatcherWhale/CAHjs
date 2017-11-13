@@ -395,7 +395,7 @@ Game.prototype.StartGame = function()
         player.emit("cards",cards);
 
         //replenish the responses
-        this.cards.responses.push(cards);
+        this.AddWhiteCards(cards);
     },this);
     
     var card = this.cards.calls.splice(0,1);
@@ -458,7 +458,7 @@ Game.prototype.NextCallCard = function()
             player.emit("cards",cards);
 
             //replenish the responses
-            this.cards.responses.push(cards);
+            this.AddWhiteCards(cards);
         }
 
         if(this.players.indexOf(player) == this.players.length - 1) done  = true;
@@ -564,6 +564,15 @@ Game.prototype.LoadDefaultDeck = function(deck)
 
         var card = {"id":deck.code + "c" + i,"text":splitArray,"numResponses":splitArray.length - 1};
         this.cards.calls.push(card);
+    }
+};
+
+Game.prototype.AddWhiteCards = function(cards)
+{
+    for (var i = 0; i < cards.length; i++)
+    {
+        var card = cards[i];
+        this.cards.responses.push(card);
     }
 };
 
