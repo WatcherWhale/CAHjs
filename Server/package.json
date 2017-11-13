@@ -1,6 +1,6 @@
 {
   "name": "cahjs-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "The CAH server",
   "main": "app.js",
   "dependencies": {
@@ -12,10 +12,22 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {},
-  "scripts": 
-  {
+  "scripts": {
     "start": "node app.js"
   },
   "author": "Mathias Maes",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WatcherWhale/CAHjs.git"
+  },
+  "keywords": [
+    "Cards",
+    "Against",
+    "Humanity"
+  ],
+  "bugs": {
+    "url": "https://github.com/WatcherWhale/CAHjs/issues"
+  },
+  "homepage": "https://github.com/WatcherWhale/CAHjs#readme"
 }
