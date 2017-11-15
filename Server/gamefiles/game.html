@@ -63,7 +63,7 @@
             
         </div>
         <div class='options col s8 box'>
-            <h4>Options</h4>
+            <h4>Options</h4>            
             <div class="row">
                 <div class="range-field col s3">
                     <label for="maxpoints">Points to win: <span id="maxpoints">8</span></label>
@@ -80,8 +80,12 @@
             </div>
 
             <div class="row">
-                <div class="input-field col s12">
-                    <input id="password" type="password" class="validate" onchange="SetPassword()">
+                <div class="input-field col s3">
+                    <input id="title" type="text" onchange="SetTitle()" data-length="20">
+                    <label for="title">Game Name</label>
+                </div>
+                <div class="input-field col s9">
+                    <input id="password" type="password" onchange="SetPassword()">
                     <label for="password">Password</label>
                 </div>
             </div>

@@ -31,6 +31,7 @@ function Game(io,collector)
     this.playerInfo = [];
 
     this.options = require('./gameOptions.json');
+    this.options.title = "Game " + this.id;
 
     this.gameStarted = false;
 
@@ -146,6 +147,7 @@ Game.prototype.SetupGameServer = function(io)
             {
                 self.options = options;
                 self.server.emit("options",self.options);
+                self.events.emit("GameOptionsUpdate");
             }
         });
 

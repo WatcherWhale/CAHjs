@@ -102,7 +102,7 @@ function SendMenuUpdates(socket)
 
         mi.id = game.id;
         mi.players = game.players.length + "/" + game.options.maxPlayers;
-        mi.title = game.id;
+        mi.title = game.options.title;
         
         if(game.options.password === "")
         {
@@ -134,7 +134,7 @@ function ListenToGame(game)
 {
     game.events.on("playerjoined",function(playerinfo)
     {
-        var update = {id:game.id,password:"",players: playerinfo.length + "/" + game.options.maxPlayers,title:game.id};
+        var update = {id:game.id,password:"",players: playerinfo.length + "/" + game.options.maxPlayers,title:game.options.title};
         if(game.options.password === "")
         {
             update.password = "no";
@@ -151,7 +151,7 @@ function ListenToGame(game)
     {
         if(playerinfo.length > 0)
         {
-            var update = {id:game.id,password:"",players: playerinfo.length + "/" + game.options.maxPlayers,title:game.id};
+            var update = {id:game.id,password:"",players: playerinfo.length + "/" + game.options.maxPlayers,title:game.options.title};
 
             if(game.options.password === "")
             {
@@ -170,6 +170,22 @@ function ListenToGame(game)
             var index = collector.Games.indexOf(game);
             collector.Games.splice(index,1);
         }
+    });
+
+    game.events.on("GameOptionsUpdate",function()
+    {
+        var update = {id:game.id,password:"",players: game.playerInfo.length + "/" + game.options.maxPlayers,title:game.options.title};
+        
+        if(game.options.password === "")
+        {
+            update.password = "no";
+        }
+        else
+        {
+            update.password = "yes";
+        }
+
+        io.sockets.emit("gameupdate",update);
     });
 }
 

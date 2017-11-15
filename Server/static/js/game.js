@@ -46,6 +46,14 @@ function SetPassword()
     gameSocket.emit("options",options);
 }
 
+function SetTitle()
+{
+    var title = $("input#title").val();
+    options.title = title;
+
+    gameSocket.emit("options",options);
+}
+
 function StartGame()
 {
     gameSocket.emit("startGame");
@@ -56,6 +64,23 @@ function StartGame()
 //#region SocketHandling
 
 //Options
+gameSocket.on("options",function(opt)
+{
+    options = opt;
+    $("input#maxpoints").val(options.maxPoints);
+    $("input#maxplayers").val(options.maxPlayers);
+    $("input#blankcards").val(options.blankcards);
+    $("input#password").val(options.password);
+    $("input#title").val(options.title);
+
+    $("label span#maxpoints").html(options.maxPoints);
+    $("label span#maxplayers").html(options.maxPlayers);
+    $("label span#blankcards").html(options.blankcards);
+
+    Materialize.updateTextFields();
+
+});
+
 gameSocket.on("adddeck",function(deck)
 {
     var li = '<li id="' + deck.id + '" class="collection-item"><div>' + deck.name + '<a href="#!" onclick="RemoveDeck(\'' + deck.id
@@ -154,22 +179,6 @@ gameSocket.on("czar",function()
 gameSocket.on("newczar",function(czarInfo)
 {
     $("div#playercollection li#" + czarInfo.id + " span.status").html("Czar");
-});
-
-gameSocket.on("options",function(opt)
-{
-    options = opt;
-    $("input#maxpoints").val(options.maxPoints);
-    $("input#maxplayers").val(options.maxPlayers);
-    $("input#blankcards").val(options.blankcards);
-    $("input#password").val(options.password);
-
-    $("label span#maxpoints").html(options.maxPoints);
-    $("label span#maxplayers").html(options.maxPlayers);
-    $("label span#blankcards").html(options.blankcards);
-
-    Materialize.updateTextFields();
-
 });
 
 gameSocket.on("passProtection",function(protected)
