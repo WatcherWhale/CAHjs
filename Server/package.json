@@ -6,9 +6,10 @@
   "dependencies": {
     "cardcast-api": "^0.2.3",
     "express": "^4.16.2",
+    "marked": "^0.3.6",
     "shortid": "^2.2.8",
-    "socket.io": "^2.0.3",
     "shuffle-array": "^1.0.1",
+    "socket.io": "^2.0.3",
     "uuid": "^3.1.0"
   },
   "devDependencies": {},

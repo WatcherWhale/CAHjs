@@ -11,5 +11,8 @@
 ## Honourable mentions
 
 * Materializecss
+* Socket.io
+* Expressjs
 * Jquery
 * [json-against-humanity](https://github.com/crhallberg/json-against-humanity);
+* Marked

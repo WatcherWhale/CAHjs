@@ -4,9 +4,12 @@ var os = require('os');
 
 var shortid = require('shortid');
 var shuffle = require('shuffle-array');
+var marked = require('marked');
+
 var CardCast = require('../modules/cardcast.js');
 var Security = require('../modules/security.js');
 
+marked.setOptions({renderer: new marked.Renderer(),gfm: true});
 
 var testmode = false;
 
@@ -194,9 +197,13 @@ Game.prototype.SetupGameServer = function(io)
         socket.on("chat",function(msg)
         {
             var name = self.playerInfo[self.players.indexOf(socket)].name;
+
+            var mardownText = marked(Security.SafeForWeb(msg)).replace("<p>","").replace("</p>","");
+            name = Security.SafeForWeb(name);
+
             self.players.forEach(function(player)
             {
-                player.emit("chat","<b>" + Security.SafeForWeb(name) + "</b>: " + Security.SafeForWeb(msg));
+                player.emit("chat","<b>" + name + "</b>: " + mardownText);
             });
         });
 
