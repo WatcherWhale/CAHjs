@@ -13,13 +13,15 @@
     <link type="text/css" rel="stylesheet" href="../css/materialize.css"/>
     <link type="text/css" rel="stylesheet" href="../css/page.css"/>
     <link type="text/css" rel="stylesheet" href="../css/cards.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/colors.css"/>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
     <div class="row">
         <div class='s12 header row'>
-            <div class="title s3">Cards Against Humanity JS</div>
+            <div class="title col s11">Cards Against Humanity JS</div>
+            <button class="col s1 btn waves-effect waves-light orange" onclick="LeaveGame()">Leave</i></button>
         </div>
     </div>
 
@@ -54,9 +56,15 @@
                         <div class="indeterminate light-green"></div>
                     </div>
                     <div class="input-field col s10">
-                        <input placeholder="Cardcast deck id" id="deck" type="text">
+                        <input placeholder="Cardcast deck id" class="tooltipped" id="deck" type="text" data-position="top" 
+                        data-tooltip="Click the button to add a deck. Hover over the button for a series of defdault decks.">
                     </div>
-                    <div class="col s2"><a id="AddDeckBtn" onclick="AddDeck();" class="secondary-content disabled"><i class="material-icons button">add_circle</i></a></div>
+                    <div class="col s2">
+                        <a id="AddDeckBtn" onclick="AddDeck();" class="secondary-content disabled tooltipped" 
+                        data-position="top" data-tooltip="Click to add a deck. Hover long for a series of defdault decks.">
+                            <i class="material-icons button">add_circle</i>
+                        </a>
+                    </div>
                 </li>
             </ul>
 
@@ -112,7 +120,7 @@
                     
                 </ul>
             </div>
-            <div class="chatinput row">
+            <div class="chatinput box row">
                     <div class="input-field col s11 liftup">
                             <input placeholder="Chat message..." id="chattext" type="text" class="validate">
                     </div>

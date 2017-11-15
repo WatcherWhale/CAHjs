@@ -13,6 +13,16 @@ div.header div.title
     margin-left: 25px;
 }
 
+div.header button
+{
+    position: relative;
+    right: 15px !important;
+    top:25px !important;
+
+    color:black;
+    font-size: 25px;
+}
+
 div.playscreen, div.startscreen
 {
     position: absolute;
@@ -35,19 +45,6 @@ div.footer
     background: tomato;
 
     margin-bottom: 0px;
-}
-
-div.adddecks i.button
-{
-    position: relative;
-    top: 25px;
-
-    font-size: 40px;
-}
-
-div.adddecks i.button:hover
-{
-    color: rgb(0, 140, 255);
 }
 
 div.box
@@ -73,6 +70,8 @@ div.chat div.chatcontainer
     height: 150px;
 
     overflow: auto;
+
+    margin-bottom: 5;
 }
 
 div.chat div.input-field.liftup
@@ -85,6 +84,19 @@ div.chat div.input-field.liftup
 div.chat div.chatinput
 {
     margin-bottom: 0px;
+    background: white;
+}
+
+div.chat div.chatinput input
+{
+    position: relative;
+    top: 10px;
+}
+
+div.chat div.chatinput button
+{
+    position: relative;
+    top: 20px;
 }
 
 .bold
@@ -107,4 +119,12 @@ div.progress
 a
 {
     cursor:pointer;
+}
+
+.error
+{
+    font-weight: bold;
+    color: red;
+
+    margin-left: 15px; 
 }

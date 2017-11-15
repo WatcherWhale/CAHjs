@@ -82,6 +82,7 @@ function CreateGame()
 
 $(window).ready(function()
 {
+    $('input#name').focus();
     $('input#name').keyup(function(e)
     {
         if(e.keyCode == 13)

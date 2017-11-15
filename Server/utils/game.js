@@ -135,7 +135,7 @@ Game.prototype.SetupGameServer = function(io)
                     self.decks.splice(i - offset,1);
                     offset++;
 
-                    self.server.emit("removedeck",{"id":deck.code,"defaultDeck":deck.defaultDeck});
+                    self.server.emit("removedeck",{"id":deck.code,"defaultDeck":deck.defaultDeck,"name":deck.name});
                 }
             }
         });

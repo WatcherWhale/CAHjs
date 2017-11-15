@@ -154,3 +154,30 @@ div.defDecks
 
     overflow-y: auto;
 }
+
+div.adddecks i.button
+{
+    position: relative;
+    top: 25px;
+
+    font-size: 40px;
+}
+
+div.adddecks i.button:hover
+{
+    color: rgb(0, 140, 255);
+}
+
+#toast-container 
+{
+    top: 20px !important;
+    right: auto !important;
+    bottom: auto !important;
+    left:20px !important;
+}
+
+.toastspan
+{
+    margin-left: 5px;
+    margin-right: 5px; 
+}

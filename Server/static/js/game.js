@@ -94,11 +94,13 @@ gameSocket.on("adddeck",function(deck)
     $("div.progress").toggleClass("hide", addingDecks == 0);
 
     EnableDisableStartButton();
+
+    if(isAdmin) Materialize.toast("Deck <span class='bluetext toastspan'>" + deck.name + "</span> added.",3000);
 });
 
 gameSocket.on("adddefdeck",function(deck)
 {
-    $("div.defDecks ul li input#" + deck.id).prop('checked', true);
+    $("div.defDecks ul li input#" + deck.name).prop('checked', true);
     defDecks++;
 
     addingDecks--;
@@ -120,13 +122,16 @@ gameSocket.on("removedeck",function(deck)
     {
         $("div.decks li#" + deck.id).remove();
     }
+
+    if(isAdmin) Materialize.toast("Deck <span class='redtext toastspan'>" + deck.name + "</span> removed.",3000);
 });
 
 gameSocket.on("Error.CardCast",function(err)
 {
     addingDecks--;
     console.error(err);
-    alert("This card set could not load.");
+    var $message = $('<i class="material-icons">error_outline</i> <span class="error">This card set could not load.</span>')
+    Materialize.toast($message,3000);
 });
 
 gameSocket.on("playnames",function(playnames)
@@ -166,6 +171,8 @@ gameSocket.on("admin",function()
     $("div.defDecks ul li").children().attr("disabled",false);
 
     EnableDisableStartButton();
+
+    Materialize.toast("You became the new <span class='toastspan greentext'>admin</span>.",3000);
 });
 
 gameSocket.on("czar",function()
@@ -264,7 +271,11 @@ gameSocket.on("end",function()
 
 gameSocket.on("winner",function(playerinfo)
 {
-    $("div.points div#playercollection li#" + playerinfo.id + " span.status").html("Winner")
+    $("div.points div#playercollection li#" + playerinfo.id + " span.status").html("Winner");
+
+    var $winToast = $('<span>' +playerinfo.name + " won this game." + '</span>')
+        .add($('<button class="btn-flat toast-action" onclick="GG(\''+ playerinfo.name + '\')">Say GG</button>'));
+    Materialize.toast($winToast,10000);
 });
 
 gameSocket.on("callcard",function(card)
@@ -521,6 +532,11 @@ function SendMessage()
 
     msg = msg.SafeForWeb();
     gameSocket.emit("chat",msg); 
+}
+
+function GG(name)
+{
+    gameSocket.emit("chat","gg " + name);
 }
 
 function EnableDisableStartButton()
