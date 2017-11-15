@@ -18,8 +18,6 @@ var collector = require("./collector.js");
 
 io.on('connection',function(socket)
 {
-    //SendMenuUpdates();
-
     socket.on("disconnect",function()
     {
         for(var i = 0; i < collector.Users.length; i++)
@@ -49,8 +47,10 @@ io.on('connection',function(socket)
         }
     });
 
-    socket.on("reconnect",function(id)
+    socket.on("reconnectme",function(id)
     {
+        SendMenuUpdates(socket);
+
         for (var i = 0; i < collector.Users.length; i++) 
         {
             if(collector.Users[i].id == id)
@@ -83,45 +83,19 @@ io.on('connection',function(socket)
     socket.on("createGame",function()
     {
         var game = new Game(io,collector);
+        ListenToGame(game);
         collector.Games.push(game);
 
         socket.emit("join",game.id);
     });
-
-    socket.on("joinedGame",UpdateGames);
-    socket.on("leftGame",UpdateGames);
 });
 
-function UpdateGames()
-{
-    /*var indexes = [];
-    var offset = 0;
-
-    for(var i = 0; i < collector.Games.length; i++)
-    {
-        if(collector.Games[i].players.length == 0)
-        {
-            indexes.push(i);
-        }
-    }
-
-    console.log(indexes);
-
-    indexes.forEach(function(index)
-    {
-        collector.Games.splice(index - offset,1);
-        offset++;
-    },this);*/
-
-    SendMenuUpdates();
-}
-
-function SendMenuUpdates()
+function SendMenuUpdates(socket)
 {
     var menuitems = [];
 
     var menuitem = {id:"",password:"",players:"",title:""};
-    
+
     collector.Games.forEach(function(game)
     {
         var mi = menuitem;
@@ -144,7 +118,7 @@ function SendMenuUpdates()
     },this);
     
     menuitems.reverse();
-    io.sockets.emit("menuupdate",menuitems);
+    socket.emit("menuupdate",menuitems);
 }
 
 function RegisterUser(socket)
@@ -152,10 +126,52 @@ function RegisterUser(socket)
     var user = new User(socket);
     collector.Users.push(user);
 
+    SendMenuUpdates(socket);
     socket.emit("userinfo",user.GetClientFreindlyInfo());
 }
 
-setInterval(UpdateGames,settings.menuRefreshTime);
+function ListenToGame(game)
+{
+    game.events.on("playerjoined",function(playerinfo)
+    {
+        var update = {id:game.id,password:"",players: playerinfo.length + "/" + game.options.maxPlayers,title:game.id};
+        if(game.options.password === "")
+        {
+            update.password = "no";
+        }
+        else
+        {
+            update.password = "yes";
+        }
+
+        io.sockets.emit("gameupdate",update);
+    });
+
+    game.events.on("playerleft",function(playerinfo)
+    {
+        if(playerinfo.length > 0)
+        {
+            var update = {id:game.id,password:"",players: playerinfo.length + "/" + game.options.maxPlayers,title:game.id};
+
+            if(game.options.password === "")
+            {
+                update.password = "no";
+            }
+            else
+            {
+                update.password = "yes";
+            }
+
+            io.sockets.emit("gameupdate",update);
+        }
+        else
+        {
+            io.sockets.emit("removegame",game.id);
+            var index = collector.Games.indexOf(game);
+            collector.Games.splice(index,1);
+        }
+    });
+}
 
 //Routing
 app.all("/game/:game",function(req,res)

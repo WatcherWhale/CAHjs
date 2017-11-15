@@ -1,7 +1,13 @@
 String.prototype.Contains = function(str)
 {
     return this.indexOf(str) != -1;
-}
+};
+
+String.prototype.replaceAll = function(search, replacement) 
+{
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
 
 String.prototype.SafeForWeb = function()
 {

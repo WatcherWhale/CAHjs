@@ -5,6 +5,8 @@ socket.on("userinfo",function(userinfo)
 {
     sessionStorage.setItem("id",userinfo.id);
     var self = userinfo;
+
+    console.log("Connected!");
 });
 
 socket.on("join",JoinGame);
@@ -12,14 +14,16 @@ socket.on("join",JoinGame);
 socket.on("reconnected",function(userinfo)
 {
     self = userinfo;
+    console.log("Reconnected!");
 });
 
-if(sessionStorage.getItem("id") !== null)
+if(sessionStorage.getItem("id") != null)
 {
-    socket.emit("reconnect",sessionStorage.getItem("id"));
+    socket.emit("reconnectme",sessionStorage.getItem("id"));
 }
 else
 {
+    console.log("Connecting...");
     socket.emit("connectme");
 }
 
