@@ -97,6 +97,13 @@ gameSocket.on("removedeck",function(deck)
     }
 });
 
+gameSocket.on("Error.CardCast",function(err)
+{
+    addingDecks--;
+    console.error(err);
+    alert("This card set could not load.");
+});
+
 gameSocket.on("playnames",function(playnames)
 {
     playnames.forEach(function(playname) 

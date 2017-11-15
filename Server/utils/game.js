@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
+var EventEmitter = require('events');
 
 var shortid = require('shortid');
 var shuffle = require('shuffle-array');
@@ -42,6 +43,9 @@ function Game(io,collector)
 
     this.playersDone = 0;
     this.cardslaid = [];
+
+    this.events = new EventEmitter();
+    this.SetupEventEmitter();
 
     this.server;
     this.SetupGameServer(io);
@@ -99,6 +103,7 @@ Game.prototype.SetupGameServer = function(io)
             }
 
             self.server.emit("playnames",self.playerInfo);
+            self.events.emit("playerleft",self.playerInfo);
         });
 
         //#region Options
@@ -230,6 +235,11 @@ Game.prototype.SetupGameServer = function(io)
     });
 };
 
+Game.prototype.SetupEventEmitter = function()
+{
+    
+};
+
 Game.prototype.RegisterSocket = function(socket)
 {
     //Add player to list
@@ -244,6 +254,8 @@ Game.prototype.RegisterSocket = function(socket)
     this.admin = this.players[0];
     this.playerInfo.push(null);
     this.users.push(null);
+
+    this.events.emit("playerjoined",this.playerInfo);
 
     //If Game is started
     if(this.gameStarted)
@@ -319,7 +331,7 @@ Game.prototype.LoadDeck = function(socket,deckid)
     {
         if(err)
         {
-            socket.emit("error",err);
+            socket.emit("Error.CardCast",err);
             return;
         }
         
