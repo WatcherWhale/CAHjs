@@ -166,13 +166,13 @@ gameSocket.on("admin",function()
 {
     $(".startscreen :input").attr("disabled", false);
     $(".startscreen a#AddDeckBtn").attr("disabled", false);
-    isAdmin = true;
 
     $("div.defDecks ul li").children().attr("disabled",false);
 
-    EnableDisableStartButton();
+    if(!isAdmin) Materialize.toast("You became the new <span class='toastspan greentext'>admin</span>.",3000);
 
-    Materialize.toast("You became the new <span class='toastspan greentext'>admin</span>.",3000);
+    isAdmin = true;
+    EnableDisableStartButton();
 });
 
 gameSocket.on("czar",function()
