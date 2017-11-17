@@ -1,4 +1,5 @@
 var uuid = require('uuid/v1');
+var Log = require('../modules/logger.js');
 
 function User(socket)
 {
@@ -9,6 +10,8 @@ function User(socket)
     
     this.game;
     this.gameSocket;
+
+    Log("User","A new user has connected.");
 }
 
 module.exports = User;

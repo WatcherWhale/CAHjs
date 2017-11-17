@@ -9,6 +9,7 @@ var marked = require('marked');
 
 var CardCast = require('../modules/cardcast.js');
 var Security = require('../modules/security.js');
+var Log = require('../modules/logger.js');
 
 marked.setOptions({renderer: new marked.Renderer(),gfm: true});
 
@@ -366,6 +367,8 @@ Game.prototype.AddDefDeck = function(socket,deckid)
 
 Game.prototype.StartGame = function()
 {
+    Log("Game","Game " + this.id + " has started.");
+
     if(this.decks.length == 0) return;
     if(this.players.length < 3 && !testmode) return;
 

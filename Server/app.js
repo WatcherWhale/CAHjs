@@ -14,6 +14,8 @@ var User = require('./utils/user.js');
 var Game = require('./utils/game.js');
 var collector = require("./collector.js");
 
+var Log = require('./modules/logger.js');
+
 //Socket handling
 
 io.on('connection',function(socket)
@@ -87,6 +89,8 @@ io.on('connection',function(socket)
         collector.Games.push(game);
 
         socket.emit("join",game.id);
+
+        Log("App","A new game has been created with id " + game.id);
     });
 });
 
@@ -197,5 +201,5 @@ app.all("/game/:game",function(req,res)
 
 http.listen(settings.port,function()
 {
-    console.log("Server started on port " + settings.port);
+    Log("App","Server started on port " + settings.port);
 });
