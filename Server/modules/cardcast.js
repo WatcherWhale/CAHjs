@@ -19,6 +19,12 @@ function GetDeck(deckId,callback)
                 return;
             }
 
+            for(var i = 0; i < cards['calls'].length; i++)
+            {
+                var text = cards['calls'][i]['text'];
+                cards['calls'][i]['numResponses'] = text.length - 1;
+            }
+
             deckinfo['calls'] = cards['calls'];
             deckinfo['responses'] = cards['responses'];
 
@@ -55,25 +61,27 @@ function GetDeckInfo(deck,callback)
 
             res.on('end',function()
             {
-                var data = buffer.toJSON();
+                var data = JSON.parse(buffer.toString());
                 callback(null,data); 
             });
         }
     });
 }
 
-function ObtainCards(deckinfo)
+function ObtainCards(deckinfo,callback)
 {
+    var buffer = new Buffer("");
+
     https.get("https://api.cardcastgame.com/v1/decks/" + deckinfo.code + "/cards",function(res)
     {
         res.on('error',function(err)
         {
-            callback(err,null);
+            callback("problem",null);
         });
 
         if(res.statusCode == 404)
         {
-            callback(new Error("Cards could not be loaded." + res.statusCode),null);
+            callback("Cards could not be loaded." + res.statusCode,null);
         }
         else
         {
@@ -84,7 +92,7 @@ function ObtainCards(deckinfo)
 
             res.on('end',function()
             {
-                var data = buffer.toJSON();
+                var data = JSON.parse(buffer.toString());
                 callback(null,data); 
             });
         }
