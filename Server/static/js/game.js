@@ -558,6 +558,16 @@ function EnableDisableStartButton()
     var enabled = decks && players && isAdmin && decksLoading;
 
     $("a.start").toggleClass("disabled",!enabled);
+
+    if(enabled) 
+    {
+        $("a.start").toggleClass("pulse",true);
+        setTimeout(function()
+        {
+            $("a.start").toggleClass("pulse",false);
+        },10000);
+    }
+
 }
 
 function LocateAddButton()
