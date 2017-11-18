@@ -91,21 +91,7 @@ Game.prototype.SetupGameServer = function(io)
 
         socket.on('disconnect',function()
         {
-            var i = self.players.indexOf(socket);
-
-            if(i === -1) return
-
-            self.players.splice(i,1);
-            self.playerInfo.splice(i,1);
-
-            if(self.players.length > 0)
-            {
-                self.admin = self.players[0];
-                self.admin.emit("admin");
-            }
-
-            self.server.emit("playnames",self.playerInfo);
-            self.events.emit("playerleft",self.playerInfo);
+            self.DisconnectSocket(socket);
         });
 
         //#region Options
@@ -307,6 +293,80 @@ Game.prototype.RegisterSocket = function(socket)
         self.server.emit("playnames",self.playerInfo);
         socket.emit("defDecks",self.collector.DefaultDecks);
     });
+};
+
+Game.prototype.DisconnectSocket = function(socket)
+{
+    var pi = this.players.indexOf(socket);
+    if(pi === -1) return;
+    
+    if(this.gameStarted)
+    {
+        var playinfo = this.playerInfo[pi];
+
+        if(this.czar == socket)
+        {
+            //Log("Game","A czar has disconnected");
+            this.drawcards = 0;
+            
+            //Give players their cards back
+            for(var i = 0; i < this.playerInfo.length; i++)
+            {
+                if(pi != i && this.cardslaid.ContainsElement("player",this.playerInfo[i]))
+                {
+                    var cardholder = this.cardslaid.FindByElement("player",this.playerInfo[i]);
+                    this.players[i].emit("cards",cardholder.card);
+                }
+            }
+
+            this.players.splice(pi,1);
+            this.playerInfo.splice(pi,1);
+
+            if(this.playerInfo.length < 3)
+            {
+                this.EndGame();
+            }
+            else
+            {
+                this.NextCallCard();
+            }
+        }
+        else
+        {
+            //Log("Game","A player has disconnected");
+            //Remove possible laid cards
+            if(this.cardslaid.ContainsElement("player",playinfo))
+            {
+                var index = this.cardslaid.indexOf(this.cardslaid.FindByElement("player",playinfo));
+                this.cardslaid.splice(index,1);
+
+                this.server.emit("cardundone");
+            }
+
+            this.players.splice(pi,1);
+            this.playerInfo.splice(pi,1);
+
+            if(this.playerInfo.length < 3)
+            {
+                this.EndGame();
+            }
+        }
+    }
+    else
+    {
+        //Log("Game","A user has disconnected");
+        this.players.splice(pi,1);
+        this.playerInfo.splice(pi,1);
+
+        if(this.players.length > 0 && this.players[0] != this.admin)
+        {
+            this.admin = this.players[0];
+            this.admin.emit("admin");
+        }
+    }
+
+    this.server.emit("playnames",this.playerInfo);
+    this.events.emit("playerleft",this.playerInfo);
 };
 
 Game.prototype.LoadDeck = function(socket,deckid)
@@ -602,3 +662,29 @@ Game.prototype.AddWhiteCards = function(cards)
 };
 
 module.exports = Game;
+
+Array.prototype.ContainsElement = function(elementIdentifier,element)
+{
+    for (var i = 0; i < this.length; i++)
+    {
+        if(this[i][elementIdentifier] == element)
+        {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+Array.prototype.FindByElement = function(elementIdentifier,element)
+{
+    for (var i = 0; i < this.length; i++)
+    {
+        if(this[i][elementIdentifier] == element)
+        {
+            return this[i];
+        }
+    }
+
+    return null;
+};

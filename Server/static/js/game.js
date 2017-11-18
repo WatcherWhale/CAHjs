@@ -59,6 +59,11 @@ function StartGame()
     gameSocket.emit("startGame");
 }
 
+function LeaveGame()
+{
+    window.location.pathname = "/menu";
+}
+
 //#endregion
 
 //#region SocketHandling
@@ -302,6 +307,11 @@ gameSocket.on("carddone",function(playerInfo)
 {
     $("div.laidcards").append("<div class='card whitecard'></div>");
     $("div.points div#playercollection li#" + playerInfo.id + " span.status").html("");
+});
+
+gameSocket.on("cardundone",function()
+{
+    $("div.laidcards .whitecard")[0].remove();
 });
 
 gameSocket.on("showcards",function(cardsholder)
