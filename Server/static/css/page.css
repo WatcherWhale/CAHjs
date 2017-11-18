@@ -2,7 +2,7 @@ div.header
 {
     height: 75px;
     
-    background: tomato;
+    background: #ee6e73;
     color:white;
 
     font-size: 50px;
@@ -41,7 +41,7 @@ div.footer
     right: 0;
 
     height: 250px;
-    background: tomato;
+    background: #ee6e73;
 
     margin-bottom: 0px;
 }

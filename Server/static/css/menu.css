@@ -6,16 +6,12 @@ div.menucontainer
 
 div.menuitem
 {
-    width:200;
-    min-height: 200;
+    width:400;
+    min-height: 230;
 
     float: left;
 
-    background: #afcbff;
-
     margin-right: 15px;
-
-    border-radius: 3px;
 }
 
 div.menuitem .title
@@ -40,7 +36,7 @@ div.menuitem .btn
     border-radius: 0px;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
-}
+}*/
 
 div.info
 {
