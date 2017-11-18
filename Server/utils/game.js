@@ -47,7 +47,7 @@ function Game(io,collector)
     this.cardslaid = [];
 
     this.events = new EventEmitter();
-    this.SetupEventEmitter();
+    this.SetupEventEmitter(io);
 
     this.server;
     this.SetupGameServer(io);
@@ -224,9 +224,14 @@ Game.prototype.SetupGameServer = function(io)
     });
 };
 
-Game.prototype.SetupEventEmitter = function()
+Game.prototype.SetupEventEmitter = function(io)
 {
-    
+    var self = this;
+    this.events.on("closeserver",function()
+    {
+        delete io.nsps['/game/' + self.id];
+        Log("Game","Game '" + self.id + "' has been destroyed.")
+    });
 };
 
 Game.prototype.RegisterSocket = function(socket)

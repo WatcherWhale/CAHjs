@@ -90,7 +90,7 @@ io.on('connection',function(socket)
 
         socket.emit("join",game.id);
 
-        Log("App","A new game has been created with id " + game.id);
+        Log("App","A new game has been created with id '" + game.id + "'.");
     });
 });
 
@@ -173,6 +173,8 @@ function ListenToGame(game)
             io.sockets.emit("removegame",game.id);
             var index = collector.Games.indexOf(game);
             collector.Games.splice(index,1);
+
+            game.events.emit("closeserver");
         }
     });
 
@@ -196,10 +198,46 @@ function ListenToGame(game)
 //Routing
 app.all("/game/:game",function(req,res)
 {
-    res.sendFile(__dirname + "/gamefiles/game.html");
+    var gameid = req.params.game;
+    var game = collector.Games.FindByElement("id",gameid);
+
+    if(game != null)
+    {
+        res.sendFile(__dirname + "/gamefiles/game.html");
+    }
+    else
+    {
+        res.redirect('/menu');
+    }
 });
 
 http.listen(settings.port,function()
 {
     Log("App","Server started on port " + settings.port);
 });
+
+Array.prototype.ContainsElement = function(elementIdentifier,element)
+{
+    for (var i = 0; i < this.length; i++)
+    {
+        if(this[i][elementIdentifier] == element)
+        {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+Array.prototype.FindByElement = function(elementIdentifier,element)
+{
+    for (var i = 0; i < this.length; i++)
+    {
+        if(this[i][elementIdentifier] == element)
+        {
+            return this[i];
+        }
+    }
+
+    return null;
+};
