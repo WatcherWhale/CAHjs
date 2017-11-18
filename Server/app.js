@@ -98,12 +98,12 @@ function SendMenuUpdates(socket)
 {
     var menuitems = [];
 
-    var menuitem = {id:"",password:"",players:"",title:""};
-
-    collector.Games.forEach(function(game)
+    for(var i = 0; i < collector.Games.length; i++)
     {
-        var mi = menuitem;
+        var game = collector.Games[i];
 
+        var mi = {id:"",password:"",players:"",title:""};
+        
         mi.id = game.id;
         mi.players = game.players.length + "/" + game.options.maxPlayers;
         mi.title = game.options.title;
@@ -118,10 +118,10 @@ function SendMenuUpdates(socket)
         }
 
         menuitems.push(mi);
-
-    },this);
+    }
     
     menuitems.reverse();
+
     socket.emit("menuupdate",menuitems);
 }
 

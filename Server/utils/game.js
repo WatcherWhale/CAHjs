@@ -3,7 +3,6 @@ var path = require('path');
 var os = require('os');
 var EventEmitter = require('events');
 
-var shortid = require('shortid');
 var shuffle = require('shuffle-array');
 var marked = require('marked');
 
@@ -17,6 +16,8 @@ var testmode = false;
 
 function Game(io,collector)
 {
+    var shortid = require('shortid');
+
     //Setup variables
     this.collector = collector;
 
@@ -31,8 +32,13 @@ function Game(io,collector)
     //{"name":"username","id":"userid","points":0}
     this.playerInfo = [];
 
-    this.options = require('./gameOptions.json');
-    this.options.title = "Game " + this.id;
+    this.options = {
+        "title":"Game " + this.id,
+        "password":"",
+        "maxPlayers":8,
+        "maxPoints":8,
+        "blankcards":0
+    };
 
     this.gameStarted = false;
 
