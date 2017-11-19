@@ -10,16 +10,28 @@ div.header
 
 div.header div.title
 {
-    margin-left: 25px;
+    display: inline-block;
+    margin-left: 0px;
 }
 
-div.header button
+div.header a.button-collapse
 {
-    position: relative;
-    right: 15px !important;
-    top:25px !important;
-    
-    font-size: 25px;
+    color: white;
+    margin: -5 0 0 20 !important;
+    padding: 0 0 0 0;
+}
+
+div.header a.button-collapse i
+{
+    font-size: 40px !important;
+
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+}
+
+div.header a.button-collapse i.rotated
+{
+    transform: rotate(-90deg);
 }
 
 div.playscreen, div.startscreen

@@ -90,4 +90,9 @@ $(window).ready(function()
             Login();
         }
     });
+
+    $(".button-collapse").sideNav({
+        onClose: function(el) { $("div.header a.button-collapse i").toggleClass("rotated")}
+    });
+    $(".button-collapse").click(function() { $("div.header a.button-collapse i").toggleClass("rotated")});
 });

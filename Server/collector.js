@@ -27,3 +27,21 @@ fs.readdir(defDecksPath, function(err, dirs)
         }
     }
 });
+
+var avatars = [];
+module.exports.Avatars = avatars;
+module.exports.GetRandomAvatar = avatars;
+
+var avaPath = __dirname + "/static/images/profiles"
+fs.readdir(avaPath, function(err, files) 
+{
+    for (var i = 0; i < files.length; i++)
+    {
+        var ext = path.extname(files[i]);
+
+        if(ext == ".png")
+        {
+            avatars.push(files[i]);
+        }
+    }
+});

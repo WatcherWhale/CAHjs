@@ -1,12 +1,14 @@
 var uuid = require('uuid/v1');
 var Log = require('../modules/logger.js');
 
-function User(socket)
+function User(socket,collector)
 {
     this.socket = socket;
 
     this.id = uuid();
     this.name;
+
+    this.avatar = "";
     
     this.game;
     this.gameSocket;
