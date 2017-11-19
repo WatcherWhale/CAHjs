@@ -1,5 +1,6 @@
 {
     "port": 80,
+    "google-analytics-track-code":"",
     "disconnectTimeout":60000,
     "menuRefreshTime": 60000
 }

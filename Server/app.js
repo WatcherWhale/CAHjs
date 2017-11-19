@@ -203,12 +203,29 @@ app.all("/game/:game",function(req,res)
 
     if(game != null)
     {
-        res.sendFile(__dirname + "/gamefiles/game.html");
+        res.sendFile(__dirname + "/hiddenfiles/game.html");
     }
     else
     {
         res.redirect('/menu');
     }
+});
+
+app.all("/analytics.js",function(req,res)
+{
+    fs.readFile('hiddenfiles/analytics.js',function(err,buffer)
+    {
+        if(err)
+        {
+            res.end(err);
+            return;
+        }
+
+        var html = buffer.toString();
+        html = html.replaceAll("%TRACKCODE%",settings['google-analytics-track-code']);
+
+        res.end(html);
+    });
 });
 
 http.listen(settings.port,function()
@@ -240,4 +257,10 @@ Array.prototype.FindByElement = function(elementIdentifier,element)
     }
 
     return null;
+};
+
+String.prototype.replaceAll = function(search, replacement) 
+{
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
 };
