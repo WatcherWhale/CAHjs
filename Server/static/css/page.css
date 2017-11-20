@@ -2,7 +2,7 @@ div.header
 {
     height: 75px;
     
-    background: #ee6e73;
+    background: #e53935;
     color:white;
 
     font-size: 50px;
@@ -53,7 +53,7 @@ div.footer
     right: 0;
 
     height: 250px;
-    background: #ee6e73;
+    background: #e53935;
 
     margin-bottom: 0px;
 }
