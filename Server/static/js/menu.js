@@ -35,7 +35,7 @@ socket.on("removegame",function(id)
 function GenerateMenuItem(id,title,password,players)
 {
     var mi = '<div class="card box z-depth-2 menuitem" id="%GAMEID%">' +
-    '<div class="card-content"><span class="card-title title">%TITLE%</span>' +
+    '<div class="card-content"><div class="card-title title">%TITLE%</div>' +
     '<div class="info"><div class="row players"><b>Players:</b> %PLAYERS%</div><div class="row password"><b>Password:</b> %PASSWORD%</div>' +
     '</div><div class="card-action"><a onclick="JoinGame(\'%GAMEID%\')" href="#!">Join Game</a></div></div></div>';
 

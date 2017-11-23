@@ -222,9 +222,16 @@ app.all("/analytics.js",function(req,res)
         }
 
         var html = buffer.toString();
-        html = html.replaceAll("%TRACKCODE%",settings['google-analytics-track-code']);
 
-        res.end(html);
+        if(settings['google-analytics-track-code'] == "" || settings['google-analytics-track-code'] == null)
+        {
+            res.end("//No track code set up");
+        }
+        else
+        {
+            html = html.replaceAll("%TRACKCODE%",settings['google-analytics-track-code']);
+            res.end(html);
+        }
     });
 });
 

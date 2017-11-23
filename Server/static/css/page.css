@@ -34,6 +34,13 @@ div.header a.button-collapse i.rotated
     transform: rotate(-90deg);
 }
 
+div.header button
+{
+    position: relative !important;
+    top: 30px !important;
+    right: 5px !important;
+}
+
 div.playscreen, div.startscreen
 {
     position: absolute;
