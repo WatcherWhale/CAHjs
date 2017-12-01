@@ -178,3 +178,8 @@ div.adddecks i.button:hover
     margin-left: 5px;
     margin-right: 5px; 
 }
+
+.collection .collection-item.avatar 
+{
+    min-height: 65px !important;
+}
