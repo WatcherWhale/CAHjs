@@ -30,7 +30,14 @@ fs.readdir(defDecksPath, function(err, dirs)
 
 var avatars = [];
 module.exports.Avatars = avatars;
-module.exports.GetRandomAvatar = avatars;
+
+module.exports.GetRandomAvatar = function()
+{
+    var rand = Math.random() * avatars.length;
+    rand = Math.floor(rand);
+
+    return avatars[rand];
+};
 
 var avaPath = __dirname + "/static/images/profiles"
 fs.readdir(avaPath, function(err, files) 

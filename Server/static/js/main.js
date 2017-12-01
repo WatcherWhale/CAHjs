@@ -17,6 +17,12 @@ socket.on("reconnected",function(userinfo)
     console.log("Reconnected!");
 });
 
+socket.on("avatar",function(avatar)
+{
+    sessionStorage.setItem("avatar",avatar);
+    $(".usercontent img.circle").attr("src","../images/profiles/" + sessionStorage.getItem("avatar"));
+})
+
 if(sessionStorage.getItem("id") != null)
 {
     socket.emit("reconnectme",sessionStorage.getItem("id"));
@@ -62,6 +68,8 @@ function Login()
     name = name.SafeForWeb();
     sessionStorage.setItem("name",name);
 
+    socket.emit("name",name);
+
     if(sessionStorage.getItem("redirect") != null)
     {
         var href = sessionStorage.getItem("redirect");
@@ -80,8 +88,24 @@ function CreateGame()
     socket.emit("createGame");
 }
 
+function ChangeAvatar()
+{
+    socket.emit("changeavatar");
+}
+
+function ChangeName()
+{
+    var name = $("input#newname").val();
+    name = name.SafeForWeb();
+    sessionStorage.setItem("name",name);
+    $(".usercontent span.name").html(sessionStorage.getItem("name"));
+
+    socket.emit("name",name);
+}
+
 $(window).ready(function()
 {
+    $("body").append(sidebar);
     $('input#name').focus();
     $('input#name').keyup(function(e)
     {
@@ -95,4 +119,14 @@ $(window).ready(function()
         onClose: function(el) { $("div.header a.button-collapse i").toggleClass("rotated")}
     });
     $(".button-collapse").click(function() { $("div.header a.button-collapse i").toggleClass("rotated")});
+
+    $('.modal').modal();
+
+    $(".usercontent img.circle").attr("src","../images/profiles/" + sessionStorage.getItem("avatar"));
+    $(".usercontent span.name").html(sessionStorage.getItem("name"));
+    $(".usercontent span.email").html("not logged in.");
+
+    $("input#newname").val(sessionStorage.getItem("name"));
+
+    Materialize.updateTextFields();
 });

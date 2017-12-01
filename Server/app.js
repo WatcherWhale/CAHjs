@@ -127,7 +127,7 @@ function SendMenuUpdates(socket)
 
 function RegisterUser(socket)
 {
-    var user = new User(socket);
+    var user = new User(socket,collector);
     collector.Users.push(user);
 
     SendMenuUpdates(socket);

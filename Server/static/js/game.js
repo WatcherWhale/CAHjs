@@ -482,8 +482,6 @@ function CzarSelect()
         $("div.laidcards").children().toggleClass("selectedCard",false);
         $(this).toggleClass("selectedCard",true);
     }
-    console.log(selectedCard);
-    //Dubbele kaarten werken nog niet id wordt niet gevonden
 }
 
 function Confirm()

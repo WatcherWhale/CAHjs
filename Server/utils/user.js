@@ -3,12 +3,14 @@ var Log = require('../modules/logger.js');
 
 function User(socket,collector)
 {
+    this.collector = collector;
     this.socket = socket;
 
     this.id = uuid();
     this.name;
 
-    this.avatar = "";
+    this.avatar;
+    this.ChangeAvatar(collector);
     
     this.game;
     this.gameSocket;
@@ -17,6 +19,20 @@ function User(socket,collector)
 }
 
 module.exports = User;
+
+User.prototype.CreateClientListener = function()
+{
+    var self = this;
+    this.socket.on("changeavatar",function() 
+    {
+        self.ChangeAvatar(collector);
+    });
+
+    this.socket.on("name",function(name)
+    {
+        this.name = name;   
+    });
+};
 
 User.prototype.GetId = function()
 {
@@ -46,6 +62,12 @@ User.prototype.GetClientFreindlyInfo = function()
     var info = new UserClient(this.id,this.name,this.game);
     return info;
 };
+
+User.prototype.ChangeAvatar = function(collector)
+{
+    this.avatar = collector.GetRandomAvatar();
+    this.socket.emit("avatar",this.avatar);
+}
 
 function UserClient(id,name,game)
 {

@@ -36,9 +36,9 @@ div.header a.button-collapse i.rotated
 
 div.header button
 {
-    position: relative !important;
+    position: absolute !important;
     top: 30px !important;
-    right: 5px !important;
+    right: 15 !important;
 }
 
 div.playscreen, div.startscreen
