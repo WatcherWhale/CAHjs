@@ -288,7 +288,7 @@ Game.prototype.RegisterSocket = function(socket)
     {
         var i = self.players.indexOf(socket);
 
-        var info = {"name":name.name,"id":name.id,"points":0};
+        var info = {"name":name.name,"id":name.id,"points":0,"avatar":name.avatar};
 
         self.playerInfo[i] = info;
 
@@ -303,6 +303,22 @@ Game.prototype.RegisterSocket = function(socket)
 
         self.server.emit("playnames",self.playerInfo);
         socket.emit("defDecks",self.collector.DefaultDecks);
+    });
+
+    socket.on("avatar",function(avatar)
+    {
+        var i = self.players.indexOf(socket);
+        self.playerInfo[i].avatar = avatar;
+
+        self.server.emit("playnames",self.playerInfo);
+    });
+
+    socket.on("changedname",function(name)
+    {
+        var i = self.players.indexOf(socket);
+        self.playerInfo[i].name = name;
+
+        self.server.emit("playnames",self.playerInfo);
     });
 
     socket.on("leave",function()

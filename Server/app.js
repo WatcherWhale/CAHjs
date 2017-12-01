@@ -58,7 +58,9 @@ io.on('connection',function(socket)
             if(collector.Users[i].id == id)
             {
                 collector.Users[i].socket = socket;
+                collector.Users[i].CreateClientListener();
                 socket.emit("reconnected",collector.Users[i].GetClientFreindlyInfo());
+
                 return;
             }
         }

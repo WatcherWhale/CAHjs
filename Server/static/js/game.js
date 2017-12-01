@@ -1,4 +1,4 @@
-var gameSocket = io(window.location.href);
+gameSocket = io(window.location.href);
 
 var options;
 
@@ -145,14 +145,17 @@ gameSocket.on("playnames",function(playnames)
     {
         if($("div.points div#playercollection li#" + playname.id).length <= 0)
         {
-            var li = '<li class="collection-item" id="' + playname.id + '"><div>' + playname.name
-                + '<span class="status"></span>'
+            var li = '<li class="collection-item avatar" id="' + playname.id + '"><div><img src="../images/profiles/' + playname.avatar + '" alt="" class="circle">' + 
+                '<span class="title">' + playname.name + '</span>'
+                + '<p><span class="status"></span></p>'
                 + '<span class="secondary-content bold points">' + playname.points + '</span></div></li>';
             $("div.points div#playercollection").append(li);
         }
         else
         {
             $("div.points div#playercollection li#" + playname.id + " span.points").html(playname.points);
+            $("div.points div#playercollection li#" + playname.id + " img").attr("src","../images/profiles/" + playname.avatar );
+            $("div.points div#playercollection li#" + playname.id + " span.title").html(playname.name);
         }
     });
 
@@ -371,7 +374,7 @@ gameSocket.on("chat",ListChatMessage);
 function RegisterSocket()
 {
     //Register
-    gameSocket.emit("name",{"name":sessionStorage.getItem("name"),"id":sessionStorage.getItem("id")});
+    gameSocket.emit("name",{"name":sessionStorage.getItem("name"),"id":sessionStorage.getItem("id"),"avatar":sessionStorage.getItem("avatar")});
     //socket.emit("joinedGame");
 }
 //#endregion

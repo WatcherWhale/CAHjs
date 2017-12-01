@@ -15,6 +15,8 @@ function User(socket,collector)
     this.game;
     this.gameSocket;
 
+    this.CreateClientListener();
+
     Log("User","A new user has connected.");
 }
 
@@ -25,12 +27,12 @@ User.prototype.CreateClientListener = function()
     var self = this;
     this.socket.on("changeavatar",function() 
     {
-        self.ChangeAvatar(collector);
+        self.ChangeAvatar(self.collector);
     });
 
     this.socket.on("name",function(name)
     {
-        this.name = name;   
+        this.name = name;
     });
 };
 

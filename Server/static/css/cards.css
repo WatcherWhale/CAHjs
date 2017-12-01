@@ -136,9 +136,6 @@ div.czar
 
 div.points div#playercollection li span.status
 {
-    position: absolute;
-    right: 50px;
-
     color: #26a69a;
 }
 

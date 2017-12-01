@@ -1,6 +1,8 @@
 var socket = io();
 var self;
 
+var gameSocket;
+
 socket.on("userinfo",function(userinfo)
 {
     sessionStorage.setItem("id",userinfo.id);
@@ -21,6 +23,9 @@ socket.on("avatar",function(avatar)
 {
     sessionStorage.setItem("avatar",avatar);
     $(".usercontent img.circle").attr("src","../images/profiles/" + sessionStorage.getItem("avatar"));
+
+    if(gameSocket != null)
+        gameSocket.emit("avatar",avatar);
 })
 
 if(sessionStorage.getItem("id") != null)
@@ -101,6 +106,9 @@ function ChangeName()
     $(".usercontent span.name").html(sessionStorage.getItem("name"));
 
     socket.emit("name",name);
+
+    if(gameSocket != null)
+        gameSocket.emit("changedname",name);
 }
 
 $(window).ready(function()
