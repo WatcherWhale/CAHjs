@@ -61,7 +61,7 @@ function StartGame()
 
 function LeaveGame()
 {
-    window.location.pathname = "/menu";
+    gameSocket.emit("leave");
 }
 
 //#endregion
@@ -230,6 +230,11 @@ gameSocket.on("full",function()
 }); 
 
 gameSocket.on("defDecks",PopulateDefDecks);
+
+gameSocket.on("left",function()
+{
+    window.location.pathname = "/menu";
+});
 
 //Game functionality
 

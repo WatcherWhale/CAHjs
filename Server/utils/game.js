@@ -304,6 +304,11 @@ Game.prototype.RegisterSocket = function(socket)
         self.server.emit("playnames",self.playerInfo);
         socket.emit("defDecks",self.collector.DefaultDecks);
     });
+
+    socket.on("leave",function()
+    {
+        self.DisconnectSocket(socket);
+    });
 };
 
 Game.prototype.DisconnectSocket = function(socket)
@@ -378,6 +383,8 @@ Game.prototype.DisconnectSocket = function(socket)
 
     this.server.emit("playnames",this.playerInfo);
     this.events.emit("playerleft",this.playerInfo);
+
+    socket.emit("left");
 };
 
 Game.prototype.LoadDeck = function(socket,deckid)
