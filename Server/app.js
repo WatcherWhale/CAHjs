@@ -96,6 +96,59 @@ io.on('connection',function(socket)
     });
 });
 
+//#region Admin
+var adminServer = io.of("/admin");
+var admins = [];
+
+adminServer.on('connection',function(socket)
+{
+    socket.on("password",function(pass)
+    {
+        if(pass == settings.adminPassword)
+        {
+            RegisterAdmin(socket);
+        }
+    });
+});
+
+function RegisterAdmin(socket)
+{
+    admins.push(socket);
+
+    //Game
+    socket.on("game.kill",function(gameid)
+    {
+        
+    });
+
+    socket.on("game.rename",function(gameid,name)
+    {
+        
+    });
+
+    socket.on("game.kick",function(gameid,userid)
+    {
+        
+    });
+
+    //User
+    socket.on("user.rename",function(userid,name)
+    {
+
+    });
+}
+
+function SyncAdmin()
+{
+    admins.forEach(function(socket)
+    {
+        socket.emit("games",collector.Games);
+        socket.emit("users",collector.Users);
+    });
+}
+//#endregion
+
+
 function SendMenuUpdates(socket)
 {
     var menuitems = [];
@@ -197,7 +250,7 @@ function ListenToGame(game)
     });
 }
 
-//Routing
+//#region WebServer
 app.all("/game/:game",function(req,res)
 {
     var gameid = req.params.game;
@@ -237,11 +290,19 @@ app.all("/analytics.js",function(req,res)
     });
 });
 
+app.all("/admin",function(req,res)
+{
+    res.sendFile(__dirname + "/hiddenfiles/admin.html");
+});
+
 http.listen(settings.port,function()
 {
     Log("App","Server started on port " + settings.port);
 });
 
+//#endregion
+
+//#region Extensions
 Array.prototype.ContainsElement = function(elementIdentifier,element)
 {
     for (var i = 0; i < this.length; i++)
@@ -273,3 +334,4 @@ String.prototype.replaceAll = function(search, replacement)
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
 };
+//#endregion

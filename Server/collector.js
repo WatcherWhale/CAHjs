@@ -1,9 +1,12 @@
+//Games
 var games = [];
 module.exports.Games = games;
 
+//Users
 var users = [];
 module.exports.Users = users;
 
+//Default Decks
 var defaultDecks = [];
 module.exports.DefaultDecks = defaultDecks;
 
@@ -28,6 +31,8 @@ fs.readdir(defDecksPath, function(err, dirs)
     }
 });
 
+
+//Avatars
 var avatars = [];
 module.exports.Avatars = avatars;
 
