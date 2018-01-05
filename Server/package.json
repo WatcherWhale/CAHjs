@@ -5,7 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "express": "^4.16.2",
-    "marked": "^0.3.6",
+    "marked": "^0.3.9",
     "mysql": "^2.15.0",
     "shortid": "^2.2.8",
     "shuffle-array": "^1.0.1",
