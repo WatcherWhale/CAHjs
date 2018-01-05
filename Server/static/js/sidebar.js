@@ -9,6 +9,7 @@ var sidebar = '<ul id="slide-out" class="side-nav usercontent">' +
         '<a><span class="white-text email">email</span></a>'+
         '</div>' +
     '</li>'+
+    '<li><div class="divider"></div></li>'+
     '<li><a class="modal-trigger waves-effect" data-target="newnamemodal"><i class="material-icons">mode_edit</i>Change nickname</a></li>'+
     '<li><a class="waves-effect" onclick="ChangeAvatar()"><i class="material-icons">shuffle</i>Randomize avatar.</a></li>'+
     '<!--li><a href="#!">Connect with google.</a></li-->'+
