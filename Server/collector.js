@@ -1,3 +1,5 @@
+var Log = require('./modules/logger.js');
+
 //Games
 var games = [];
 module.exports.Games = games;
@@ -44,16 +46,34 @@ module.exports.GetRandomAvatar = function()
     return avatars[rand];
 };
 
-var avaPath = __dirname + "/static/images/profiles"
-fs.readdir(avaPath, function(err, files) 
-{
-    for (var i = 0; i < files.length; i++)
-    {
-        var ext = path.extname(files[i]);
+var avaPath = __dirname + "/static/images/profiles";
+ReadAvatars();
 
-        if(ext == ".png")
+function ReadAvatars()
+{
+    ClearAvatars();
+    fs.readdir(avaPath, function(err, files) 
+    {
+        if(err) console.error(err);
+
+        for (var i = 0; i < files.length; i++)
         {
-            avatars.push(files[i]);
+            var ext = path.extname(files[i]);
+
+            if(ext == ".png" || ext == ".jpg")
+            {
+                avatars.push(files[i]);
+            }
         }
+    });
+
+    setTimeout(ReadAvatars,10*60*1000);
+}
+
+function ClearAvatars ()
+{
+    while (avatars.length)
+    {
+        avatars.pop();
     }
-});
+}
