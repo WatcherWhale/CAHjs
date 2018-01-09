@@ -3,6 +3,9 @@ var self;
 
 var gameSocket;
 
+var avatars = [];
+var currentAvatar = "";
+
 socket.on("userinfo",function(userinfo)
 {
     sessionStorage.setItem("id",userinfo.id);
@@ -18,6 +21,7 @@ socket.on("reconnected",function(userinfo)
     self = userinfo;
     console.log("Reconnected!");
 
+    currentAvatar = sessionStorage.getItem("avatar");
     socket.emit("name",sessionStorage.getItem("name"));
 });
 
@@ -26,9 +30,25 @@ socket.on("avatar",function(avatar)
     sessionStorage.setItem("avatar",avatar);
     $(".usercontent img.circle").attr("src","../images/profiles/" + sessionStorage.getItem("avatar"));
 
+    currentAvatar = avatar;
+
     if(gameSocket != null)
         gameSocket.emit("avatar",avatar);
-})
+});
+
+socket.on("avatars",function(avtrs)
+{
+    avatars = avtrs;
+
+    for (let i = 0; i < avatars.length; i++) 
+    {
+        const av = avatars[i];
+        var opt = "<option data-img-src='../images/profiles/" + av + "' value='" + i + "'></option>";
+        $("select#avatarpick").append(opt);
+    }
+
+    $('#avatarpick').imagepicker();
+});
 
 if(sessionStorage.getItem("id") != null)
 {
@@ -98,6 +118,19 @@ function CreateGame()
 function ChangeAvatar()
 {
     socket.emit("changeavatar");
+}
+
+function PickAvatar()
+{
+    socket.emit("changeavatar",$("select#avatarpick").val());
+    currentAvatar = avatars[parseInt($("select#avatarpick").val())];
+}
+
+function OpenAvatarModal()
+{
+    $('#avatarpicker').modal('open');
+    $("select#avatarpick").val(avatars.indexOf(currentAvatar));
+    $('#avatarpick').imagepicker();
 }
 
 function ChangeName()

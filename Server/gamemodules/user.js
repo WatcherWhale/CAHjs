@@ -9,8 +9,8 @@ function User(socket,collector)
     this.id = uuid();
     this.name;
 
-    this.avatar;
-    this.ChangeAvatar(collector);
+    this.avatar = collector.GetRandomAvatar();
+    this.socket.emit("avatar",this.avatar);
     
     this.game;
     this.gameSocket;
@@ -25,9 +25,9 @@ module.exports = User;
 User.prototype.CreateClientListener = function()
 {
     var self = this;
-    this.socket.on("changeavatar",function() 
+    this.socket.on("changeavatar",function(index) 
     {
-        self.ChangeAvatar(self.collector);
+        self.ChangeAvatar(self.collector,index);
     });
 
     this.socket.on("name",function(name)
@@ -57,9 +57,9 @@ User.prototype.GetClientFreindlyInfo = function()
     return info;
 };
 
-User.prototype.ChangeAvatar = function(collector)
+User.prototype.ChangeAvatar = function(collector,index)
 {
-    this.avatar = collector.GetRandomAvatar();
+    this.avatar = collector.Avatars[parseInt(index)]
     this.socket.emit("avatar",this.avatar);
 }
 

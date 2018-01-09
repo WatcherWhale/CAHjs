@@ -146,3 +146,9 @@ a
 
     margin-left: 15px; 
 }
+
+.image_picker_image
+{
+    height: 64px;
+    cursor: pointer;
+}

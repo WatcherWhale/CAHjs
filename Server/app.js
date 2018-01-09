@@ -20,6 +20,8 @@ var Log = require('./modules/logger.js');
 
 io.on('connection',function(socket)
 {
+    socket.emit("avatars",collector.Avatars);
+    
     socket.on("disconnect",function()
     {
         for(var i = 0; i < collector.Users.length; i++)
