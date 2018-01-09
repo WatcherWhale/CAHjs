@@ -1,4 +1,4 @@
-var sidebar = '<ul id="slide-out" class="side-nav usercontent">' +
+sidebar = '<ul id="slide-out" class="side-nav usercontent">' +
     '<li>'+
         '<div class="user-view">'+
         '<div class="background">'+

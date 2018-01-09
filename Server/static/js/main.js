@@ -5,6 +5,7 @@ var gameSocket;
 
 var avatars = [];
 var currentAvatar = "";
+var sidebar;
 
 socket.on("userinfo",function(userinfo)
 {
@@ -46,8 +47,6 @@ socket.on("avatars",function(avtrs)
         var opt = "<option data-img-src='../images/profiles/" + av + "' value='" + i + "'></option>";
         $("select#avatarpick").append(opt);
     }
-
-    $('#avatarpick').imagepicker();
 });
 
 if(sessionStorage.getItem("id") != null)
@@ -148,7 +147,8 @@ function ChangeName()
 
 $(window).ready(function()
 {
-    $("body").append(sidebar);
+    if(sidebar) $("body").append(sidebar);
+
     $('input#name').focus();
     $('input#name').keyup(function(e)
     {
