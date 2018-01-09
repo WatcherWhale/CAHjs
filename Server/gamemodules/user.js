@@ -32,7 +32,7 @@ User.prototype.CreateClientListener = function()
 
     this.socket.on("name",function(name)
     {
-        this.name = name;
+        self.name = name;
     });
 };
 
@@ -49,14 +49,6 @@ User.prototype.SendServer = function(event,message)
 User.prototype.SendGame = function(event,message)
 {
     this.gameSocket.emit(event,message);
-};
-
-User.prototype.SetupServerSocketConnection = function()
-{
-    this.socket.on("name",function(name)
-    {
-        this.name = name;
-    });
 };
 
 User.prototype.GetClientFreindlyInfo = function()

@@ -17,6 +17,8 @@ socket.on("reconnected",function(userinfo)
 {
     self = userinfo;
     console.log("Reconnected!");
+
+    socket.emit("name",sessionStorage.getItem("name"));
 });
 
 socket.on("avatar",function(avatar)

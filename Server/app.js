@@ -10,8 +10,8 @@ var io = require("socket.io")(http);
 
 app.use(express.static('static'));
 
-var User = require('./utils/user.js');
-var Game = require('./utils/game.js');
+var User = require('./gamemodules/user.js');
+var Game = require('./gamemodules/game.js');
 var collector = require("./collector.js");
 
 var Log = require('./modules/logger.js');

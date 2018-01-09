@@ -196,15 +196,7 @@ Game.prototype.SetupGameServer = function(io)
         //#region Etc
         socket.on("chat",function(msg)
         {
-            var name = self.playerInfo[self.players.indexOf(socket)].name;
-
-            var mardownText = marked(Security.SafeForWeb(msg)).replace("<p>","").replace("</p>","");
-            name = Security.SafeForWeb(name);
-
-            self.players.forEach(function(player)
-            {
-                player.emit("chat","<b>" + name + "</b>: " + mardownText);
-            });
+            self.HandleChatMessage(socket,msg)
         });
 
         //Check if admin
@@ -695,7 +687,93 @@ Game.prototype.AddWhiteCards = function(cards)
     }
 };
 
+Game.prototype.HandleChatMessage = function(socket,msg)
+{
+    var name = Security.SafeForWeb(this.playerInfo[this.players.indexOf(socket)].name);
+    if(msg[0] == '/')
+    {
+        var command = msg.substr(1).split(' ');
+        var args = [];
+
+        for(var i = 0; i < command.length; i++)
+        {
+            command[i] = command[i].toLowerCase();
+            if(i != 0) args.push(command[i]);
+        }
+
+        var cmd = command[0];
+
+        //Handle Command
+        if(cmd == "help")
+        {
+            socket.emit("chat",MarkDown("**/help** for a list of commands."));
+            socket.emit("chat",MarkDown("**/say** to message a super chat."));
+        }
+        else if(cmd == "say")
+        {
+            if(socket == this.admin)
+            {
+                this.players.forEach(function(player)
+                {
+                    var mardownText = MarkDown(args.BuildArgsString());
+                    player.emit("chat","<span style='font-size:18'><b>[Admin]</b> " + mardownText + "</span>");
+                });
+            }
+            else
+            {
+                this.players.forEach(function(player)
+                {
+                    var mardownText = MarkDown(args.BuildArgsString());
+                    player.emit("chat","<span style='font-size:18'><b>[" + name + "]</b> " + mardownText + "</span>");
+                });
+            }
+        }
+        else if("kick")
+        {
+            if(socket == this.admin)
+            {
+                var kickedName = args.BuildArgsString();
+                var player = this.playerInfo.FindByElement("name",kickedName);
+                var pIndex = this.playerInfo.indexOf(player);
+
+                if(player == null && pIndex !== -1)
+                {
+                    socket.emit("chat","<span style='color:red'>User not found.</span>");
+                }
+                else
+                {
+                    socket.emit("chat",MarkDown("**" + kickedName + "** was kicked by the game admin."));
+                    this.DisconnectSocket(this.players[pIndex]);
+                }
+            }
+            else
+            {
+                socket.emit("chat","<span style='color:red'>You are not permitted to perform this command.</span>");
+            }
+        }
+        else
+        {
+            socket.emit("chat","<span style='color:red'>Command <b>'" + cmd + "'</b> is an unknown command.</span>");
+        }
+    }
+    else
+    {
+        //SendMessage
+        var mardownText = MarkDown(Security.SafeForWeb(msg));
+
+        this.players.forEach(function(player)
+        {
+            player.emit("chat","<b>" + name + "</b>: " + mardownText);
+        });
+    }
+};
+
 module.exports = Game;
+
+function MarkDown(str)
+{
+    return marked(str).replace("<p>","").replace("</p>","");
+}
 
 Array.prototype.ContainsElement = function(elementIdentifier,element)
 {
@@ -721,4 +799,15 @@ Array.prototype.FindByElement = function(elementIdentifier,element)
     }
 
     return null;
+};
+
+Array.prototype.BuildArgsString = function()
+{
+    var str = "";
+    this.forEach(function(s)
+    {
+       str += s + " "; 
+    });
+
+    return str.substr(0,str.length - 1);
 };
