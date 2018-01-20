@@ -1,16 +1,1 @@
-{
-    "calls":[
-        {
-            "id":"ID",
-            "text":["TEXT1","TEXT2"],
-            "numResponses":1
-        }
-    ],
-    "responses":[
-        {
-            "id":"ID",
-            "text":["TEXT"]
-        }
-    ],
-    "code":"default"
-}
+{"calls":[{"id":"ID","text":["Test ","."],"numResponses":1,"type":"0","options":{"font":"Roboto","font-size":"20px","color":"black"}}],"responses":[{"id":"ID","text":["WW1"],"type":"0","options":{"font":"Roboto","font-size":"30px","color":"black"}}],"code":"default"}

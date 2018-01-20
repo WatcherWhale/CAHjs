@@ -243,14 +243,21 @@ gameSocket.on("left",function()
 
 gameSocket.on("cards",function(cards)
 {
-    var exCard = '<div class="card whitecard" id="%ID%">%TEXT%</div>';
+    const exCard = '<div class="card whitecard" id="%ID%">%TEXT%</div>';
     cards.forEach(function(card) 
     {
         cardsInHand.push(card);
 
         var c = exCard;
         c= c.replace("%ID%",card.id);
-        c= c.replace("%TEXT%",card.text);
+        if(card.type == 0 && card.options != null)
+        {
+            c= c.replace("%TEXT%", "<span style='color:" + card.options.color + ";font-size:" + card.options["font-size"] + "'>" + card.text+ "</span>");
+        }
+        else
+        {
+            c= c.replace("%TEXT%", card.text);
+        }
 
         $("div.owncards").append(c);
         $("div.owncards").children().click(CardSelect);
@@ -305,6 +312,11 @@ gameSocket.on("callcard",function(card)
     },this);
     text = text.substr(0,text.length - "___".length);
 
+    var style = "";
+    if(card[0].type == 0 && card[0].options) style = "style='color:" + card[0].options.color + ";font-size:" + card[0].options["font-size"] +"'";
+
+    text = "<span "+ style + ">" + text + "</span>";
+
     text += '<div class="pick">Pick: <div class="amount">' + card[0].numResponses + '</div></div>';
 
     cardstoLay = card[0].numResponses;
@@ -344,7 +356,10 @@ gameSocket.on("showcards",function(cardsholder)
 
             holder.card.forEach(function(card)
             {
-                div += "<div class='card whitecard' id='" + card.id + "'>" + card.text + "</div>";
+                var style = "";
+                if(card.type == 0 && card.options) style = "style='color:" + card.options.color + ";font-size:" + card.options["font-size"] +"'";
+
+                div += "<div " + style + " class='card whitecard' id='" + card.id + "'>" + card.text + "</div>";
             }, this);
 
             div += "</div>";
@@ -353,7 +368,11 @@ gameSocket.on("showcards",function(cardsholder)
         else
         {
             var card = holder.card[0];
-            $("div.laidcards").append("<div class='card whitecard' id='" + card.id + "'>" + card.text + "</div>");
+
+            var style = "";
+            if(card.type == 0 && card.options) style = "style='color:" + card.options.color + ";font-size:" + card.options["font-size"] +"'";
+
+            $("div.laidcards").append("<div " + style + " class='card whitecard' id='" + card.id + "'>" + card.text + "</div>");
         }
     }, this);
 
