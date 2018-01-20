@@ -1,0 +1,16 @@
+{
+    "calls":[
+        {
+            "id":"ID",
+            "text":["TEXT1","TEXT2"],
+            "numResponses":1
+        }
+    ],
+    "responses":[
+        {
+            "id":"ID",
+            "text":["TEXT"]
+        }
+    ],
+    "code":"default"
+}

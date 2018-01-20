@@ -1,0 +1,61 @@
+.property
+{
+    border-left: solid !important;
+    border-left-color: rgb(216, 216, 216) !important;
+
+    min-height: 70% !important;
+
+    position: fixed;
+    right:0 !important;
+}
+
+.addbtn
+{
+    position: relative;
+    top:10px;
+
+    height: 50px !important;
+    width: 50px !important;
+}
+
+.addbtn i 
+{
+    line-height: 1.25 !important;
+    font-size: 40px !important;
+
+    position: relative;
+    left:-11px;
+}
+
+.collapsible li.disabled .collapsible-body
+{
+    display: none !important;
+}
+
+.collapsible li.disabled .collapsible-header
+{
+    color: rgb(173, 173, 173) !important;
+}
+
+.selectable
+{
+    cursor: pointer;
+}
+
+.selectable.selected
+{
+    background-color: #2196F3 !important;
+}
+
+li.collection-item div.row
+{
+    margin-bottom: 0px !important;
+}
+
+.delete
+{
+    position: absolute;
+    top:4;
+    left:6;
+
+}

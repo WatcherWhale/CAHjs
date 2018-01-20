@@ -10,11 +10,12 @@ sidebar = '<ul id="slide-out" class="side-nav usercontent">' +
         '</div>' +
     '</li>'+
     '<li><div class="divider"></div></li>'+
-    '<li><a class="modal-trigger waves-effect" data-target="newnamemodal"><i class="material-icons">mode_edit</i>Change nickname</a></li>'+
-    '<li><a class="waves-effect" onclick="OpenAvatarModal()"><i class="material-icons">image</i>Change avatar.</a></li>'+
+    '<li><a class="modal-trigger waves-effect waves-yellow" data-target="newnamemodal"><i class="material-icons">mode_edit</i>Change nickname</a></li>'+
+    '<li><a class="waves-effect waves-blue" onclick="OpenAvatarModal()"><i class="material-icons">image</i>Change avatar.</a></li>'+
     '<!--li><a href="#!">Connect with google.</a></li-->'+
     '<li><div class="divider"></div></li>'+
-    '<li><a class="logout waves-effect waves-red" href="#!">Logout</a></li>'+
+    '<li><a class="logout waves-effect waves-orange" href="/builder"><i class="material-icons">build</i>Builder</a></li>'+
+    '<!--li><a class="logout waves-effect waves-red" href="#!">Logout</a></li-->'+
 '</ul>'+
 
 '<div id="newnamemodal" class="modal modal">'+

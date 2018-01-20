@@ -142,7 +142,7 @@ a
 .error
 {
     font-weight: bold;
-    color: red;
+    color: rgb(255, 104, 104);
 
     margin-left: 15px; 
 }
@@ -152,3 +152,9 @@ a
     height: 64px;
     cursor: pointer;
 }
+
+.waves-effect.waves-blue .waves-ripple 
+{
+    background-color: rgba(33, 150, 243, 0.65);
+}
+      

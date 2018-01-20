@@ -1,7 +1,7 @@
 var fs = require('fs');
 var https = require('https');
 
-function GetDeck(deckId,callback)
+async function GetDeck(deckId,callback)
 {
     GetDeckInfo(deckId,function(err,deckinfo)
     {
@@ -37,7 +37,7 @@ module.exports.GetDeck = GetDeck;
 
 var apiUrl = "https://api.cardcastgame.com/v1/";
 
-function GetDeckInfo(deck,callback)
+async function GetDeckInfo(deck,callback)
 {
     var buffer = new Buffer("");
 
@@ -68,7 +68,7 @@ function GetDeckInfo(deck,callback)
     });
 }
 
-function ObtainCards(deckinfo,callback)
+async function ObtainCards(deckinfo,callback)
 {
     var buffer = new Buffer("");
 

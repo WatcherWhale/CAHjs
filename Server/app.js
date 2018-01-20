@@ -13,6 +13,7 @@ app.use(express.static('static'));
 var User = require('./gamemodules/user.js');
 var Game = require('./gamemodules/game.js');
 var collector = require("./collector.js");
+var CardBuilder = require('./modules/cardbuilder.js');
 
 var Log = require('./modules/logger.js');
 
@@ -268,6 +269,22 @@ app.all("/game/:game",function(req,res)
     }
 });
 
+app.all('/builder',function(req,res)
+{
+    //Create set and redirect
+    res.sendFile(__dirname + "/hiddenfiles/cardbuilder.html");
+});
+
+app.all('/builder/:cardset',function(req,res)
+{
+    res.sendFile(__dirname + "/hiddenfiles/cardbuilder.html");
+});
+
+app.all('/cards/:cardset',function(req,res)
+{
+    res.sendFile(__dirname + "/cards/" + req.params.cardset + ".json");
+});
+
 app.all("/analytics.js",function(req,res)
 {
     fs.readFile('hiddenfiles/analytics.js',function(err,buffer)
@@ -300,6 +317,8 @@ app.all("/admin",function(req,res)
 http.listen(settings.port,function()
 {
     Log("App","Server started on port " + settings.port);
+
+    CardBuilder.Setup(io,__dirname);
 });
 
 //#endregion

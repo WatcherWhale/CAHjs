@@ -395,8 +395,9 @@ Game.prototype.DisconnectSocket = function(socket)
     socket.emit("left");
 };
 
-Game.prototype.LoadDeck = function(socket,deckid)
+Game.prototype.LoadDeck = async function(socket,deckid)
 {
+    //Check if cardset is already loaded
     for (var i = 0; i < this.decks.length; i++)
     {
         var deck = this.decks[i];
@@ -405,6 +406,7 @@ Game.prototype.LoadDeck = function(socket,deckid)
             return;
     }
 
+    //Check if the cardset is a default included set
     for (var i = 0; i < this.collector.DefaultDecks.length; i++)
     {
         if(this.collector.DefaultDecks[i].code == deckid)
@@ -415,19 +417,28 @@ Game.prototype.LoadDeck = function(socket,deckid)
         }
     }
 
-    var self = this;
-    CardCast.GetDeck(deckid,function(err,deck)
+    //Check if the cardset is from cardcast
+    if(deckid.substr("cardcast:".length) == "cardcast:")
     {
-        if(err)
+        var self = this;
+        CardCast.GetDeck(deckid.substr("cardcast:".length),function(err,deck)
         {
-            socket.emit("Error.CardCast",err);
-            return;
-        }
+            if(err)
+            {
+                socket.emit("Error.CardCast",err);
+                return;
+            }
+            
+            deck["defaultDeck"] = false;
+            self.decks.push(deck);
+            self.server.emit("adddeck",{"name":deck.name,"id":deckid});
+        });
+    }
+    //Check if the cardset is from the builder
+    else
+    {
         
-        deck["defaultDeck"] = false;
-        self.decks.push(deck);
-        self.server.emit("adddeck",{"name":deck.name,"id":deckid});
-    });
+    }
 };
 
 Game.prototype.AddDefDeck = function(socket,deckid)
