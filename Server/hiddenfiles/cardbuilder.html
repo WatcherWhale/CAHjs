@@ -32,7 +32,7 @@
                             <input id="blackcard" type="text" class="validate">
                             <label for="blackcard">Black card text...</label>
                         </div>
-                        <a class="btn-floating waves-effect waves-light blue addbtn col s2"><i class="material-icons">add</i></a>
+                        <a onclick="AddBlackCard()" class="btn-floating waves-effect waves-light blue addbtn col s2"><i class="material-icons">add</i></a>
                     </div>
 
                     <ul class="collection col s11 blackcollection">  
@@ -48,7 +48,7 @@
                             <input id="whitecard" type="text" class="validate">
                             <label for="whitecard">White card text...</label>
                         </div>
-                        <a class="btn-floating waves-effect waves-light blue addbtn col s2"><i class="material-icons">add</i></a>
+                        <a onclick="AddWhiteCard()" class="btn-floating waves-effect waves-light blue addbtn col s2"><i class="material-icons">add</i></a>
                     </div>
 
                     <ul class="collection col s11 whitecollection">
@@ -122,7 +122,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a class="modal-action modal-close waves-effect waves-red btn-flat delete">
+                <a class="modal-action modal-close waves-effect waves-red btn-flat delete" onclick="DeleteCard()">
                     <i class="material-icons left">delete</i>Delete
                 </a>
                 <a class="modal-action modal-close waves-effect waves-red btn-flat">

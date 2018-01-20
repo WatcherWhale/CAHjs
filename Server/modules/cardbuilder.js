@@ -23,9 +23,10 @@ function SetupBuilder(io,dir)
             });
         });
 
-        socket.on("createid",function()
+        socket.on("createid",function(carddata)
         {
-            socket.emit("createid",uuid());
+            carddata.code = uuid();
+            socket.emit("createid",carddata);
         });
 
         socket.on("save",async function(savedata)

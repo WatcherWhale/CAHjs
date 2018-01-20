@@ -437,7 +437,23 @@ Game.prototype.LoadDeck = async function(socket,deckid)
     //Check if the cardset is from the builder
     else
     {
-        
+        var self = this;
+        fs.readFile("cards/" + deckid + ".json",function(err,data)
+        {
+            if(err)
+            {
+                socket.emit("Error.CardCast",err);
+                return;
+            } 
+            else
+            {
+                var deck = JSON.parse(data);
+
+                deck["defaultDeck"] = false;
+                self.decks.push(deck);
+                self.server.emit("adddeck",{"name":"Card Builder: <b>" + deck.code + "</b>","id":deckid});
+            }
+        });
     }
 };
 

@@ -39,22 +39,60 @@ $(document).ready(function()
 
     builder = io("/builder");
     LoadFromServer();
+
+    builder.on("createid",function(id)
+    {
+        cardcollection[id.type][id.id].id = id.code;
+    });
 });
 
 function AddWhiteCard()
 {
-    
+    var text = $("#whitecard").val();
+    $("#whitecard").val("");
+
+    if(text == "")
+    {
+        var $toastContent = $('<i class="material-icons">error_outline</i> <span class="error">Every card should have text.</span>');
+        Materialize.toast($toastContent, 5000);
+        return;
+    }
+
+    Materialize.updateTextFields();
+
+    var l = cardcollection.responses.push({id:"generating",text:[text]});
+
+    builder.emit("createid",{id:l-1,type:"responses"});
+
+    Load(cardcollection);
+    EditCard("responses",l-1);
 }
 
 function AddBlackCard()
 {
-    
-}
+    var text = $("#blackcard").val();
+    $("#blackcard").val("");
 
+    if(text == "")
+    {
+        var $toastContent = $('<i class="material-icons">error_outline</i> <span class="error">Every card should have text.</span>');
+        Materialize.toast($toastContent, 5000);
+        return;
+    }
+    else if(!text.Contains("_"))
+    {
+        var $toastContent = $('<i class="material-icons">error_outline</i> <span class="error">A black card should contain the \'_\' character.</span>');
+        Materialize.toast($toastContent, 10000);
+    }
 
-function LoadProperties()
-{
+    Materialize.updateTextFields();
 
+    var l = cardcollection.calls.push({id:"generating",text:text.split('_')});
+
+    builder.emit("createid",{id:l-1,type:"calls"});
+
+    Load(cardcollection);
+    EditCard("calls",l-1);
 }
 
 function EditCard(type,id)
@@ -161,15 +199,22 @@ function SaveCard()
 
     if(selectedcard.type == "responses")
     {
-        $(".whitecollection #" + selectedcard.id).html($("#cardtext").val());
+        $(".whitecollection #" + selectedcard.id + " div div").html($("#cardtext").val());
     }
     else if(selectedcard.type == "responses")
     {
-        $(".blackcollection #" + selectedcard.id).html($("#cardtext").val());
+        $(".blackcollection #" + selectedcard.id + " div div").html($("#cardtext").val());
     }
 
     $('#editcard').modal('close');
     Save();
+}
+
+function DeleteCard()
+{
+    cardcollection[selectedcard.type].splice(selectedcard.id,1);
+    Save();
+    Load(cardcollection);
 }
 
 function LoadFromServer()
@@ -198,6 +243,12 @@ function Load(carddata)
             text += "_" + str;
         }
 
+        if(call.numResponses == null || call.numResponses <= 0)
+        {
+            cardcollection.calls[i].numResponses = call.text.length - 1;
+            Save();
+        }
+
         var li = carditem.replaceAll("{COLOR}","Black").replaceAll("{ID}",i).replaceAll("{TEXT}",text).replaceAll('{TYPE}',"calls");
         $(".blackcollection").append(li);
     }
@@ -210,12 +261,6 @@ function Load(carddata)
         var li = carditem.replaceAll("{COLOR}","White").replaceAll("{ID}",i).replaceAll("{TEXT}",text).replaceAll('{TYPE}',"responses");
         $(".whitecollection").append(li);
     }
-
-    $("ul.whitecollection li.selectable").click(function()
-    {
-        console.log("click")
-        EditCard("responses",$(this).attr("id")); 
-    });
 }
 
 function Save()
