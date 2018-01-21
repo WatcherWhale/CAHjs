@@ -44,6 +44,12 @@ $(document).ready(function()
     {
         cardcollection[id.type][id.id].id = id.code;
     });
+
+    builder.on("saved",function()
+    {
+        var $toastContent = $('<i class="material-icons">info_outline</i> <span class="info blue-text">Saved cardset.</span>');
+        Materialize.toast($toastContent, 1000);
+    });
 });
 
 function AddWhiteCard()
@@ -135,7 +141,9 @@ function EditCard(type,id)
 
         if(card.options == null)
         {
-            card.options = {"font":"Roboto","font-size":"20px",color:"black"};
+            card.options = {"font":"Roboto",color:"black"};
+
+            if(type == "calls") cardcollection.options.color = "white";
         }
 
         $("#color").val(card.options.color);
@@ -182,7 +190,7 @@ function SaveCard()
     card.type = $("select#cardtype").val();
     if(card.type == 0)
     {
-        var options = {"font":"Roboto","font-size":fontsizes[$("#fontsize").val()],color:$("#color").val()};
+        var options = {"font":"Roboto",color:$("#color").val()};
         card.options = options;
     }
 
@@ -221,6 +229,15 @@ function LoadFromServer()
 {
     builder.emit("get",code);
     builder.on("get",Load);
+    buidler.on("reload",ReLoad);
+}
+
+function ReLoad(carddata)
+{
+    var $toastContent = $('<i class="material-icons">info_outline</i> <span class="info blue-text">Reloaded cardset.</span>');
+    Materialize.toast($toastContent, 1000);
+
+    Load(carddata);
 }
 
 const carditem = '<li class="collection-item" id="{ID}">'+
@@ -266,4 +283,7 @@ function Load(carddata)
 function Save()
 {
     builder.emit("save",cardcollection);
+
+    var $toastContent = $('<i class="material-icons">info_outline</i> <span class="info blue-text">Saving cardset.</span>');
+    Materialize.toast($toastContent, 1000);
 }

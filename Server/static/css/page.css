@@ -141,8 +141,14 @@ a
 
 .error
 {
-    font-weight: bold;
-    color: rgb(255, 104, 104);
+    color: rgb(255, 104, 104) !important;
+
+    margin-left: 15px; 
+}
+
+.info
+{
+    color: #2196F3 !important;
 
     margin-left: 15px; 
 }

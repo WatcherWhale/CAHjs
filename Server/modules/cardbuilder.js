@@ -3,6 +3,7 @@ const shortid = require('shortid');
 const uuid = require('uuid/v4');
 
 var server;
+var sockets = {};
 function SetupBuilder(io,dir)
 {
     __dirname = dir;
@@ -12,6 +13,9 @@ function SetupBuilder(io,dir)
     {
         socket.on("get",async function(code)
         {
+            sockets[code] = [];
+            sockets[code].push(socket);
+
             fs.readFile(__dirname + "/cards/" + code + ".json",function(err,data)
             {
                 if(err)
@@ -37,7 +41,16 @@ function SetupBuilder(io,dir)
                 {
                     //Log error 
                     socket.emit("error",err);
+                    return;
                 }
+
+                socket.emit("saved");
+
+                sockets[savedata.code].forEach(s => 
+                {
+                    if(s != socket)
+                        s.emit("reload",savedata);   
+                });
             });
         });
     });
