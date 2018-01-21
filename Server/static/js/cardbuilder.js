@@ -143,7 +143,7 @@ function EditCard(type,id)
         {
             card.options = {"font":"Roboto",color:"black"};
 
-            if(type == "calls") cardcollection.options.color = "white";
+            if(type == "calls") card.options.color = "white";
         }
 
         $("#color").val(card.options.color);

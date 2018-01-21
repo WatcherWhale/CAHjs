@@ -108,10 +108,30 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="disabled" id="imageoptions">
+                        <li class="" id="imageoptions">
                             <div class="collapsible-header"><i class="material-icons">image</i>Image Options</div>
                             <div class="collapsible-body">
-
+                                <div class="row"></div>
+                                <div class="row">
+                                    <form enctype='multipart/form-data'>
+                                        Upload Image
+                                        <div class="file-field input-field">
+                                            <div class="btn">
+                                                <span>File</span>
+                                                <input type="file">
+                                            </div>
+                                            <div class="file-path-wrapper">
+                                                <input class="file-path validate" type="text">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <input id="imageurl" type="text" class="validate">
+                                        <label for="imageurl">Image Url</label>
+                                    </div>
+                                </div>
                             </div>
                         </li>
                         <li class="disabled" id="animationoptions">
