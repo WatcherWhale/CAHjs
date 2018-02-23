@@ -1,4 +1,5 @@
-socket.on('menuupdate',function(games)
+//Server sends all current menu information
+socket.on('menuupdate', function (games)
 {
     $(".menucontainer").empty();
 
@@ -10,6 +11,7 @@ socket.on('menuupdate',function(games)
     }
 });
 
+//Server sends update information for a specific game
 socket.on("gameupdate",function(game)
 {
     var gameEl = $("div.menuitem#" + game.id);
@@ -27,11 +29,19 @@ socket.on("gameupdate",function(game)
     }
 });
 
+//Server sends if games have to be removed
 socket.on("removegame",function(id)
 {
     $("div.menuitem#" + id).remove();
 });
 
+/**
+ * @description Create a MenuItem for the menu
+ * @param {string} id
+ * @param {string} title
+ * @param {string} password
+ * @param {number} players
+ */
 function GenerateMenuItem(id,title,password,players)
 {
     var mi = '<div class="card box z-depth-2 menuitem" id="%GAMEID%">' +

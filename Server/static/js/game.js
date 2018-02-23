@@ -18,6 +18,9 @@ var defDecks = 0;
 
 //#region Options
 
+/**
+ * @description Add a deck to the game.
+ */
 function AddDeck()
 {
     var deck = $("input#deck").val();
@@ -32,12 +35,19 @@ function AddDeck()
     $("div.progress").toggleClass("hide", addingDecks == 0);
 }
 
+/**
+ * @description Remove a deck from the game.
+ * @param {string} deckid
+ */
 function RemoveDeck(deckid)
 {
     //remove list item
     gameSocket.emit("removedeck",deckid);
 }
 
+/**
+ * @description Set the password for the game.
+ */
 function SetPassword()
 {
     var pass = $("input#password").val();
@@ -46,6 +56,9 @@ function SetPassword()
     gameSocket.emit("options",options);
 }
 
+/**
+ * @description Set the Game name.
+ */
 function SetTitle()
 {
     var title = $("input#title").val();
@@ -54,11 +67,17 @@ function SetTitle()
     gameSocket.emit("options",options);
 }
 
+/**
+ * @description Start the game
+ */
 function StartGame()
 {
     gameSocket.emit("startGame");
 }
 
+/**
+ * @description Leave the game
+ */
 function LeaveGame()
 {
     gameSocket.emit("leave");
@@ -68,7 +87,7 @@ function LeaveGame()
 
 //#region SocketHandling
 
-//Options
+//Update options screen
 gameSocket.on("options",function(opt)
 {
     options = opt;
@@ -86,6 +105,7 @@ gameSocket.on("options",function(opt)
 
 });
 
+//Add a deck to the screen
 gameSocket.on("adddeck",function(deck)
 {
     var li = '<li id="' + deck.id + '" class="collection-item"><div>' + deck.name + '<a href="#!" onclick="RemoveDeck(\'' + deck.id
@@ -103,6 +123,7 @@ gameSocket.on("adddeck",function(deck)
     if(isAdmin) Materialize.toast("Deck <span class='bluetext toastspan'>" + deck.name + "</span> added.",3000);
 });
 
+//Add a default deck to the screen
 gameSocket.on("adddefdeck",function(deck)
 {
     $("div.defDecks ul li input#" + deck.name).prop('checked', true);
@@ -116,6 +137,7 @@ gameSocket.on("adddefdeck",function(deck)
     EnableDisableStartButton();
 });
 
+//Remove deck from the screen
 gameSocket.on("removedeck",function(deck)
 {
     if(deck.defaultDeck)
@@ -131,6 +153,7 @@ gameSocket.on("removedeck",function(deck)
     if(isAdmin) Materialize.toast("Deck <span class='redtext toastspan'>" + deck.name + "</span> removed.",3000);
 });
 
+//Display error when cardcast gives back an error
 gameSocket.on("Error.CardCast",function(err)
 {
     addingDecks--;
@@ -139,6 +162,7 @@ gameSocket.on("Error.CardCast",function(err)
     Materialize.toast($message,3000);
 });
 
+//Update playernames and statusses
 gameSocket.on("playnames",function(playnames)
 {
     playnames.forEach(function(playname) 
@@ -170,6 +194,7 @@ gameSocket.on("playnames",function(playnames)
     EnableDisableStartButton();
 });
 
+//The client became the admin
 gameSocket.on("admin",function()
 {
     $(".startscreen :input").attr("disabled", false);
@@ -183,6 +208,7 @@ gameSocket.on("admin",function()
     EnableDisableStartButton();
 });
 
+//The client became the czar
 gameSocket.on("czar",function()
 {
     isCzar = true;
@@ -191,18 +217,22 @@ gameSocket.on("czar",function()
     $("div.owncards").append(div);
 });
 
+//Update the czar
 gameSocket.on("newczar",function(czarInfo)
 {
     $("div#playercollection li#" + czarInfo.id + " span.status").html("Czar");
 });
 
+//Game sends if it is password protected
 gameSocket.on("passProtection",function(protected)
 {
+    //
     if(sessionStorage.getItem("name") == null || sessionStorage.getItem("name") == "")
     {
         sessionStorage.setItem("redirect",window.location.href);
         window.location.href = "../..";
     }
+    //Is password protected
     else if(protected)
     {
         var pass = prompt("Type in the room password");
@@ -221,19 +251,23 @@ gameSocket.on("passProtection",function(protected)
             }
         });
     }
+        //Not password protected
     else
     {
         RegisterSocket();
     }
 });
 
+//Game sends if the game is full
 gameSocket.on("full",function()
 {
     window.location.href = "../menu";
 }); 
 
+//Get all default decks from server 
 gameSocket.on("defDecks",PopulateDefDecks);
 
+//Client is going to leave the game
 gameSocket.on("left",function()
 {
     window.location.pathname = "/menu";
@@ -241,6 +275,7 @@ gameSocket.on("left",function()
 
 //Game functionality
 
+//Get client's cards from server
 gameSocket.on("cards",function(cards)
 {
     const exCard = '<div class="card whitecard" id="%ID%">%TEXT%</div>';
@@ -267,12 +302,14 @@ gameSocket.on("cards",function(cards)
     
 });
 
+//When game got started
 gameSocket.on("start",function()
 {
     $("div.startscreen").toggleClass("hiddendiv", true);
     $("div.playscreen").toggleClass("hiddendiv", false);
 });
 
+//When the game ended
 gameSocket.on("end",function()
 {
     $("div.startscreen").toggleClass("hiddendiv", false);
@@ -289,6 +326,7 @@ gameSocket.on("end",function()
     $("div.owncards").empty();
 });
 
+//Show the winner
 gameSocket.on("winner",function(playerinfo)
 {
     $("div.points div#playercollection li#" + playerinfo.id + " span.status").html("Winner");
@@ -298,6 +336,7 @@ gameSocket.on("winner",function(playerinfo)
     Materialize.toast($winToast,10000);
 });
 
+//Update the black or call card
 gameSocket.on("callcard",function(card)
 {
     $("div.laidcards").empty();
@@ -323,17 +362,20 @@ gameSocket.on("callcard",function(card)
     $("div.callcard div.card").html(text);
 });
 
+//When a player is done
 gameSocket.on("carddone",function(playerInfo)
 {
     $("div.laidcards").append("<div class='card whitecard'></div>");
     $("div.points div#playercollection li#" + playerInfo.id + " span.status").html("");
 });
 
+//When a card is undone due to leaving etc
 gameSocket.on("cardundone",function()
 {
     $("div.laidcards .whitecard")[0].remove();
 });
 
+//Show all cards
 gameSocket.on("showcards",function(cardsholder)
 {
     $("div.laidcards").empty();
@@ -380,6 +422,7 @@ gameSocket.on("showcards",function(cardsholder)
     $("div.laidcards div.selectable").click(CzarSelect);
 });
 
+//Show the chosen card
 gameSocket.on("cardchosen",function(cardsholder)
 {
     cardsholder.card.forEach(function(card)
@@ -388,8 +431,12 @@ gameSocket.on("cardchosen",function(cardsholder)
     },this);
 });
 
+//When a chat message is received
 gameSocket.on("chat",ListChatMessage);
 
+/**
+ * @description Register the socket to the game server.
+ */
 function RegisterSocket()
 {
     //Register
