@@ -449,11 +449,14 @@ function RegisterSocket()
 
 $(document).ready(function()
 {
+    //Disable all options screen by default
     $(".startscreen :input").attr("disabled", true);
     $("a.start").toggleClass("disabled",true);
 
+    //Add the Confirm function to the Confirm button
     $(".confirmbtn").click(Confirm);
 
+    //Setup default decks window
     setTimeout(() => {LocateAddButton();},500);
 
     $("div.defDecks").hide();
@@ -494,7 +497,9 @@ $(document).ready(function()
         $("div.defDecks").fadeOut();
     });
 
+    //End Setup default decks window
 
+    //Setup press enter to activate function
     $('div.adddecks input#deck').keyup(function(e)
     {
         if(e.keyCode == 13)
@@ -512,6 +517,11 @@ $(document).ready(function()
     });
 })
 
+/**
+ * @description When an input changed update options
+ * @param {string} input The name of the input field
+ * @param {string} value The value of the input field
+ */
 function InputChanged(input,value)
 {
     $("label span#" + input).html(value);
@@ -519,6 +529,9 @@ function InputChanged(input,value)
     gameSocket.emit("options",options);
 }
 
+/**
+ * @description When the user selected a card from his cards in hand
+ */
 function CardSelect()
 {
     if(confirmed || isCzar) return;
@@ -531,6 +544,9 @@ function CardSelect()
     $(this).toggleClass("selectedCard",true);
 }
 
+/**
+ * @description When the Czar selected a card
+ */
 function CzarSelect()
 {
     if(confirmed) return;
@@ -553,6 +569,9 @@ function CzarSelect()
     }
 }
 
+/**
+ * @description When the user clicks the Confirm Button
+ */
 function Confirm()
 {
     $("a.confirmbtn").toggleClass("disabled",true);
@@ -597,14 +616,23 @@ function Confirm()
     }
 }
 
+/**
+ * @description Add a message to the chatbox
+ * @param {string} msg The message to add to the chat box
+ */
 function ListChatMessage(msg)
 {
     var li = '<li class="collection-item">' + msg + '</li>';
-    $(".chatcontainer ul").append(li);
-    //animate to bottom
-    $('.chatcontainer').animate({scrollTop:$('.chatcontainer')[0].scrollHeight}, 1000);
+    var item = $(".chatcontainer ul").append(li);
+
+    //Animate
+    $('.chatcontainer').animate({ scrollTop: $('.chatcontainer')[0].scrollHeight }, 1000);
+    item.fadeIn(1000);
 }
 
+/**
+ * @description Send a message to the game server
+ */
 function SendMessage()
 {
     var msg = $("input#chattext").val();
@@ -616,11 +644,18 @@ function SendMessage()
     gameSocket.emit("chat",msg); 
 }
 
+/**
+ * @description Sends a gg message
+ * @param {string} name
+ */
 function GG(name)
 {
     gameSocket.emit("chat","gg " + name);
 }
 
+/**
+ * @description Toggle Enable/Disable Start Button
+ */
 function EnableDisableStartButton()
 {
     var decks = $("div.adddecks div.decks").children().length >= 1 || defDecks >= 1;
@@ -642,6 +677,9 @@ function EnableDisableStartButton()
 
 }
 
+/**
+ * @description get the pixel coordinates of the Card Add Button
+ */
 function LocateAddButton()
 {
     $("div.defDecks").css({"top":0,"left":0});
@@ -649,6 +687,10 @@ function LocateAddButton()
     $("div.defDecks").offset({ top: offset.top + 22.5, left: offset.left + -3.5152});
 }
 
+/**
+ * @description When the server sends all default decks
+ * @param {Array} decks All default decks
+ */
 function PopulateDefDecks(decks)
 {
     decks.forEach(function(deck)
@@ -673,6 +715,10 @@ function PopulateDefDecks(decks)
 }
 //#endregion
 
+/**
+ * @description Get a card by it's id
+ * @param {string} id
+ */
 function GetCardById(id)
 {
     var c;
@@ -680,7 +726,6 @@ function GetCardById(id)
     {
         if(card.id == id)
         {
-            console.log("sss");
             c = card;
             return;
         }
@@ -689,6 +734,10 @@ function GetCardById(id)
     return c;
 }
 
+/**
+ * @description Get a Card Holder by a card id
+ * @param {string} id
+ */
 function GetLaidCardHolderById(id)
 {
     var c = null;

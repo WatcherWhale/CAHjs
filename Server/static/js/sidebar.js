@@ -1,3 +1,4 @@
+//Sets the sidebar variable to this html.
 sidebar = '<ul id="slide-out" class="side-nav usercontent">' +
     '<li>'+
         '<div class="user-view">'+
