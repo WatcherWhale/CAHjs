@@ -1,5 +1,4 @@
 # CAHjs
-[bewhaled.ga](http://bewhaled.ga) runs the cahjs server.
 
 ## Install
 
